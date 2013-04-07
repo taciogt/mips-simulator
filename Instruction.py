@@ -46,8 +46,12 @@ class Instruction_ADD(Instruction):
     #the bits (0 or 1) as values.
     #These bits should be looked at the third pipeline PDF from the Professor
     def get_control_signals(self):    
-        pass
-        
-        
-        
+        control_signals = {"RegDst":1,
+                            "ALUSrc":0,
+                            "MemtoReg":0,
+                            "RegWrite":1,
+                            "MemWrite":0,
+                            "Branch":0,
+                            "Jump":0,
+                            "ExtOp":None}
         
