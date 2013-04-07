@@ -54,4 +54,4 @@ class Instruction_ADD(Instruction):
                             "Branch":0,
                             "Jump":0,
                             "ExtOp":None}
-        
+        return control_signals
