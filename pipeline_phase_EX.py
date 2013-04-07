@@ -1,7 +1,8 @@
 # coding: utf-8
 
 class PipelinePhaseEX():
-	current_instruction = None
+	# self.current_instruction = NOP
+	
 	def action();
 		pass
 	

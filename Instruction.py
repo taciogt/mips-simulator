@@ -19,9 +19,13 @@ class Instruction():
 
     def action_WB():
         pass                
-        
+     
+     
+class NOP(Instruction):
+    pass
+       
 #Instrucao vai ser Rd = Rs + Rt
-class Instruction_ADD(Instruction):
+class ADD(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
