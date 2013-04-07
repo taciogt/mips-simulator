@@ -7,12 +7,6 @@ class ProgramController(object):
 	def run_entire_program(self):
 		pass
 	
-	def pause(self):
-	    pass
-	    
-	def openFile(self):
-	    pass
-	
 	#Contains the last four adresses used in memory
     recently_used_mem = [0, 0, 0, 0]
 	
