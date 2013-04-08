@@ -13,6 +13,7 @@ class PipelinePhasesTests(unittest.TestCase):
 
     def test_not_implemented_method(self):
         self.assertRaises(NotImplementedError, PipelinePhase().action)
+        self.assertRaises(NotImplementedError, PipelinePhase().try_to_get_instruction)
 
     def test_nop_as_default(self):
         for p in self.pipelines:
