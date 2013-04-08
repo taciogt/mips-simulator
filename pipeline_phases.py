@@ -42,10 +42,10 @@ class PipelinePhaseEX(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseEX, self).__init__()
     
-    def action(self, id_phase):
+    def action(self, id_phase, PC_counter):
         if isinstance(self.current_instruction, NOP):
             self.current_instruction = id_phase.try_to_return_instruction()
-        self.current_instruction.action_EX() 
+        self.current_instruction.action_EX(PC_counter) 
         
     def try_to_return_instruction(self):
         if self.current_instruction.is_finished():
