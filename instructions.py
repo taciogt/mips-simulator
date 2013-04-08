@@ -27,21 +27,31 @@ class Instruction():
         return b.int
 
 
-    def action_ID(self):
+    def action_ID(self, registers):
         raise NotImplementedError('This is an abstract class.')
 
-    def action_EX(self):
+    def action_EX(self, PC_counter):
         raise NotImplementedError('This is an abstract class.')
 
-    def action_MEM(self):
+    def action_MEM(self, memX, memY):
         raise NotImplementedError('This is an abstract class.')
 
-    def action_WB(self):
+    def action_WB(self, registers):
         raise NotImplementedError('This is an abstract class.')    
 
 
 class NOP(Instruction):
-    pass
+    def action_ID(self, registers):
+        pass
+
+    def action_EX(self, PC_counter):
+        pass
+
+    def action_MEM(self, memX, memY):
+        pass
+
+    def action_WB(self, registers):
+        pass
        
 # Instrucao vai ser Rd = Rs + Rt
 class ADD(Instruction):
@@ -55,7 +65,7 @@ class ADD(Instruction):
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
-    def action_EX(self):
+    def action_EX(self, PC_counter):
         self.Rd = self.Rs + self.Rt
         
     def action_MEM(self, memX, memY):
@@ -90,7 +100,7 @@ class ADDi(Instruction):
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
         
-    def action_EX(self):
+    def action_EX(self, PC_counter):
         self.Rd = self.Rs + self.ImmExt
         
     def action_MEM(self, memX, memY):
@@ -128,7 +138,7 @@ class SUB(Instruction):
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
-    def action_EX(self):
+    def action_EX(self, PC_counter):
         self.Rd = self.Rs - self.Rt
         
     def action_MEM(self, memX, memY):
@@ -165,7 +175,7 @@ class MUL(Instruction):
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
-    def action_EX(self):
+    def action_EX(self, PC_counter):
         self.Rd = self.Rs * self.Rt
         self.execution_state -= 1
         
@@ -423,7 +433,7 @@ class SW(Instruction):
     def action_WB(self, registers):
         # Rd: 16 to 11
         #registers[self.get_register_position(16, 21)] = self.Rt
-        
+        pass
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor

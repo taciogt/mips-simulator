@@ -1,4 +1,6 @@
 # coding: utf-8
+from Register import Register
+from pipeline_phases import *
 
 class Pipeline(object):
 	
