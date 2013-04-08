@@ -7,9 +7,15 @@ import instructions
 
 class PipelinePhasesTests(unittest.TestCase):
 
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.pipelines = [PipelinePhaseIF(), PipelinePhaseID(), PipelinePhaseEX(), PipelinePhaseMEM(), PipelinePhaseWB()]
+
+    def test_not_implemented_method(self):
+        self.assertRaises(NotImplementedError, PipelinePhase().action)
+
     def test_nop_as_default(self):
-        pipelines = [PipelinePhaseIF(), PipelinePhaseID(), PipelinePhaseEX(), PipelinePhaseMEM(), PipelinePhaseWB()]
-        for p in pipelines:
+        for p in self.pipelines:
             self.assertTrue(isinstance(p.current_phase, instructions.NOP))
 
 if __name__ == "__main__":
