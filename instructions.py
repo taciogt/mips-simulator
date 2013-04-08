@@ -8,13 +8,13 @@ class Instruction():
         if start == 0 and end!=32:
             b = BitArray(self.code[-end:])
             return b.uint
-        else if start != 0 and end!=32:
+        elif start != 0 and end!=32:
             b = BitArray(self.code[-end:-start])
             return b.uint
-        else start != 0 and end==32:
+        elif start != 0 and end==32:
             b = BitArray(self.code[:-start])
             return b.uint
-        else start == 0 and end==32:
+        elif start == 0 and end==32:
             b = BitArray(self.code[:])
             return b.uint
 

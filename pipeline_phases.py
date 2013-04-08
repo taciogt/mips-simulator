@@ -23,8 +23,13 @@ class PipelinePhaseIF(PipelinePhase):
         super(PipelinePhaseIF, self).__init__()
     
     def action(self):
-        pass
-
+        if isinstance(self.current_instruction, NOP):
+            opcode = self.current_instruction.code[0:6]
+            if opcode == '000000':
+                funct = self.current_instruction.code[-6:]
+                
+            elif opcode == '001000':
+                
 
 class PipelinePhaseID(PipelinePhase):
     
@@ -35,6 +40,7 @@ class PipelinePhaseID(PipelinePhase):
         if isinstance(self.current_instruction, NOP):
             self.current_instruction = if_phase.try_to_return_instruction()
         self.current_instruction.action_ID(registers)
+        self.current_instruction.action_ID = lambda x : None
         
 
 class PipelinePhaseEX(PipelinePhase):
@@ -59,9 +65,8 @@ class PipelinePhaseMEM(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseMEM, self).__init__()
 
-    def action(self, ex_phase, memX, memY):
-        if isinstance(self.current_instruction, NOP):
-            self.current_instruction = ex_phase.try_to_return_instruction()
+    def action(self, ex_phase, memX, memY):       
+        self.current_instruction = ex_phase.try_to_return_instruction()
         self.current_instruction.action_MEM(memX, memY)
     
 
@@ -71,7 +76,6 @@ class PipelinePhaseWB(PipelinePhase):
         super(PipelinePhaseWB, self).__init__()
 
     def action(self, mem_phase, registers):
-        if isinstance(self.current_instruction, NOP):
-            self.current_instruction = mem_phase.try_to_return_instruction()
+        self.current_instruction = mem_phase.try_to_return_instruction()
         self.current_instruction.action_WB(registers)
     
