@@ -51,9 +51,9 @@ class ADD(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
     def action_EX(self):
         self.Rd = self.Rs + self.Rt
@@ -63,7 +63,7 @@ class ADD(Instruction):
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        registers[self.get_register_position(11, 16)].write(self.Rd,self)
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -86,7 +86,7 @@ class ADDi(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
         
@@ -98,7 +98,7 @@ class ADDi(Instruction):
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        registers[self.get_register_position(11, 16)].write(self.Rd,self)
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -124,9 +124,9 @@ class SUB(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
     def action_EX(self):
         self.Rd = self.Rs - self.Rt
@@ -136,7 +136,7 @@ class SUB(Instruction):
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        registers[self.get_register_position(11, 16)].write(self.Rd,self)
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -161,9 +161,9 @@ class MUL(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         
     def action_EX(self):
         self.Rd = self.Rs * self.Rt
@@ -174,7 +174,7 @@ class MUL(Instruction):
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        registers[self.get_register_position(11, 16)].write(self.Rd,self)
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -203,15 +203,15 @@ class BEQ(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
         if self.Rs == self.Rt:
-           PC_counter.value += 4 + self.Imm
+           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
              
         
     def action_MEM(self, memX, memY):
@@ -244,17 +244,16 @@ class BLE(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
         if self.Rs <= self.Rt:
-           PC_counter.value += 4 + self.Imm
+           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
         
-             
         
     def action_MEM(self, memX, memY):
         pass
@@ -285,24 +284,24 @@ class BNE(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
         if self.Rs != self.Rt:
-           PC_counter.value += 4 + self.Imm
+           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
         
-             
         
     def action_MEM(self, memX, memY):
         pass
         
     def action_WB(self, registers):
+        pass
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        #registers[self.get_register_position(11, 16)] = self.Rd
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -332,8 +331,7 @@ class JMP(Instruction):
         
         
     def action_EX(self, PC_counter):
-        PC_counter.value = self.PC
-        
+        PC_counter.write(self.PC,self)
              
         
     def action_MEM(self, memX, memY):
@@ -366,9 +364,9 @@ class LW(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.ImmExt = self.get_immediate_value(0, 16)
         
@@ -377,12 +375,12 @@ class LW(Instruction):
              
         
     def action_MEM(self, memX, memY):
-        self.Rt = self.Rs + self.ImmExt
+        self.Rt = mem[self.Rs + self.ImmExt] #???
         
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(16, 21)] = self.Rt
+        registers[self.get_register_position(16, 21)].write(self.Rt,self)
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -408,9 +406,9 @@ class SW(Instruction):
         
     def action_ID(self, registers):
         # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
+        self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
+        self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.ImmExt = self.get_immediate_value(0, 16)
         
@@ -419,12 +417,12 @@ class SW(Instruction):
              
         
     def action_MEM(self, memX, memY):
-        self.Rt = self.Rs + self.ImmExt
-        
+        self.Rt = MEM[self.Rs + self.ImmExt] #???
+        registers[self.get_register_position(16, 21)].write(self.Rt,self)
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(16, 21)] = self.Rt
+        #registers[self.get_register_position(16, 21)] = self.Rt
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
