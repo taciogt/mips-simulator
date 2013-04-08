@@ -8,12 +8,12 @@ class Pipeline(object):
 	    for i in range(32):
 		    self.registers.append(Register())
 	
-	    self.phase = []
-	    self.phase.append(PipelinePhaseIF())
-	    self.phase.append(PipelinePhaseID())
-	    self.phase.append(PipelinePhaseEX())
-	    self.phase.append(PipelinePhaseMEM())
-	    self.phase.append(PipelinePhaseWB())
+	    self.phases = []
+	    self.phases.append(PipelinePhaseIF())
+	    self.phases.append(PipelinePhaseID())
+	    self.phases.append(PipelinePhaseEX())
+	    self.phases.append(PipelinePhaseMEM())
+	    self.phases.append(PipelinePhaseWB())
 	
 	    self.memX = []
 	    self.memY = []
