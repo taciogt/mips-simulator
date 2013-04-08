@@ -3,13 +3,19 @@
 import instructions.NOP, instructions.MUL
 
 
-class PipelinePhaseIF():
+class PipelinePhase:
+    def __init__(self):
+        self.current_phase = instructions.NOP()
+
+
+class PipelinePhaseIF(PipelinePhase):
+    
     current_instruction = None
-    def action();
+    def action(self):
         pass
 
-class PipelinePhaseID():
-    self.current_instruction = None
+
+class PipelinePhaseID:
 
     def action(self, phase, registers):
         self.current_instruction = phase.current_instruction
@@ -17,21 +23,20 @@ class PipelinePhaseID():
 
 
 class PipelinePhaseEX():
-    self.current_instruction = Instruction.NOP()
     
     def action(self):
-        if isinstance(self.current_instruction, Instruction.MUL):
+        if isinstance(self.current_instruction, instructions.MUL):
             if True:
                 pass    
 
 class PipelinePhaseMEM():
-    current_instruction = None
-    def action();
+
+    def action(self):
         pass
     
 
 class PipelinePhaseWB():
-    current_instruction = None
-    def action();
+
+    def action(self):
         pass
     
