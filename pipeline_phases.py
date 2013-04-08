@@ -29,7 +29,8 @@ class PipelinePhaseIF(PipelinePhase):
                 funct = self.current_instruction.code[-6:]
                 
             elif opcode == '001000':
-                
+                pass
+
 
 class PipelinePhaseID(PipelinePhase):
     

@@ -3,24 +3,27 @@ from bitstring import BitArray
 
 class Instruction():
     
+    def is_finished(self):
+        return True
+    
     def get_register_position(self, start, end):
         
-        if start == 0 and end!=32:
-            b = BitArray(self.code[-end:])
+        if start == 0 and end != 31:
+            b = BitArray(bin=self.code[-end:])
             return b.uint
-        elif start != 0 and end!=32:
-            b = BitArray(self.code[-end:-start])
+        elif start != 0 and end != 31:
+            b = BitArray(bin=self.code[-end:-start])
             return b.uint
-        elif start != 0 and end==32:
-            b = BitArray(self.code[:-start])
+        elif start != 0 and end == 31:
+            b = BitArray(bin=self.code[:-start])
             return b.uint
-        elif start == 0 and end==32:
-            b = BitArray(self.code[:])
+        elif start == 0 and end == 31:
+            b = BitArray(bin=self.code[:])
             return b.uint
 
     def get_immediate_value(self):
         
-        b = BitArray(self.code[-16:])
+        b = BitArray(bin=self.code[-16:])
         return b.int
 
 
@@ -34,9 +37,9 @@ class Instruction():
         raise NotImplementedError('This is an abstract class.')
 
     def action_WB(self):
-        raise NotImplementedError('This is an abstract class.')                
-     
-     
+        raise NotImplementedError('This is an abstract class.')    
+
+
 class NOP(Instruction):
     pass
        
@@ -101,7 +104,7 @@ class ADDi(Instruction):
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
     
-    #valores INCORRETOS! Falta confirmar se os valores do ADD são os mesmos do Addi
+    # valores INCORRETOS! Falta confirmar se os valores do ADD são os mesmos do Addi
     def get_control_signals(self):    
         control_signals = {"RegDst":1,
                             "ALUSrc":0,
@@ -154,6 +157,7 @@ class MUL(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
+        self.execution_state = 2
         
     def action_ID(self, registers):
         # 26 to 21
@@ -162,7 +166,8 @@ class MUL(Instruction):
         self.Rt = registers[self.get_register_position(16, 21)].value
         
     def action_EX(self):
-        self.Rd = self.Rs*self.Rt
+        self.Rd = self.Rs * self.Rt
+        self.execution_state -= 1
         
     def action_MEM(self, memX, memY):
         pass
@@ -175,7 +180,7 @@ class MUL(Instruction):
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
     
-    #Sinais INCORRETOS
+    # Sinais INCORRETOS
     def get_control_signals(self):    
         control_signals = {"RegDst":0,
                             "ALUSrc":0,
@@ -186,6 +191,9 @@ class MUL(Instruction):
                             "Jump":0,
                             "ExtOp":None}
         return control_signals
+    
+    def is_finished(self):
+        return self.execution_state == 0
 
 # Instrucao vai ser if(Rs==Rt) => pc+=4+Imm
 class BEQ(Instruction):
@@ -202,8 +210,8 @@ class BEQ(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        if self.Rs==self.Rt:
-           PC_counter.value += 4+ self.Imm
+        if self.Rs == self.Rt:
+           PC_counter.value += 4 + self.Imm
              
         
     def action_MEM(self, memX, memY):
@@ -243,8 +251,8 @@ class BLE(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        if self.Rs<=self.Rt:
-           PC_counter.value += 4+ self.Imm
+        if self.Rs <= self.Rt:
+           PC_counter.value += 4 + self.Imm
         
              
         
@@ -284,8 +292,8 @@ class BNE(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        if self.Rs!=self.Rt:
-           PC_counter.value += 4+ self.Imm
+        if self.Rs != self.Rt:
+           PC_counter.value += 4 + self.Imm
         
              
         
@@ -312,7 +320,7 @@ class BNE(Instruction):
         return control_signals
 
 # Instrucao vai ser pc = EndJmp ???
-#nao ta feita!
+# nao ta feita!
 class JMP(Instruction):
 
     def __init__(self, instruction_code):
@@ -320,7 +328,7 @@ class JMP(Instruction):
         
     def action_ID(self, registers):
         # 26 to 0
-        self.PC = self.get_register_position(0, 26)]
+        self.PC = self.get_register_position(0, 26)
         
         
     def action_EX(self, PC_counter):
@@ -350,7 +358,7 @@ class JMP(Instruction):
         return control_signals
 
 # Instrucao vai ser pc = EndJmp ???
-#nao ta feita!
+# nao ta feita!
 class LW(Instruction):
 
     def __init__(self, instruction_code):
@@ -392,7 +400,7 @@ class LW(Instruction):
         return control_signals
         
 # Instrucao vai ser pc = EndJmp ???
-#nao ta feita!
+# nao ta feita!
 class SW(Instruction):
 
     def __init__(self, instruction_code):

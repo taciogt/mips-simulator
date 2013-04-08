@@ -2,6 +2,7 @@
 
 import unittest
 from instructions import *
+from Register import * 
 
 class InstructionsTests(unittest.TestCase):
     def test_not_implemented_methods(self):
@@ -13,16 +14,18 @@ class InstructionsTests(unittest.TestCase):
         
     def test_add_instruction(self):
         op = '000000'
-        rs = '10011' # Rs -->19 
+        rs = '10011' # Rs --> 19 
         rt = '01100' # Rt --> 12
         rd = '11001' # Rd --> 25
-        shamt = '000000'
+        shamt = '00000'
         funct = '100000'
         code = op + rs + rt + rd + shamt + funct
         
-        registers = [0] * 32
-        registers[19] = 1
-        registers[12] = 2
+        registers = [Register()] * 32
+        registers[19] = Register()
+        registers[19].value = 1
+        registers[12] = Register()
+        registers[12].value = 2
         
         instruction = ADD(code)
         instruction.action_ID(registers)
@@ -34,7 +37,7 @@ class InstructionsTests(unittest.TestCase):
         self.assertEqual(instruction.Rd, 3)
         
         instruction.action_WB(registers)
-        instruction.assertEqual(registers[25], 3)
+        self.assertEqual(registers[25].value, 3)
 
     # lembrar de testar para complemento de 2!
     def test_add_i(self):
