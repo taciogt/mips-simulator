@@ -1,5 +1,5 @@
 # coding: utf-8
-from Register import Register
+from register import Register
 from pipeline_phases import *
 
 class Pipeline(object):
@@ -17,10 +17,7 @@ class Pipeline(object):
 	    self.phases.append(PipelinePhaseMEM())
 	    self.phases.append(PipelinePhaseWB())
 	
-	    self.memX = []
-	    self.memY = []
-	
-	    self.dados = []
+	    self.mem = []
 	
 	    self.PC = []
 	    self.PC_counter = Register()

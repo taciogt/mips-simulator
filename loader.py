@@ -24,7 +24,7 @@ class Loader(object):
         return self.pc
 
     def read_mem_values(self):
-        f = open('mem_values.txt','r')
+        f = open('../mem.txt','r')
         for line in f:
             x, y = line.split()
             self.mem_x.append(x)

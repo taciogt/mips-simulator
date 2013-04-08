@@ -96,10 +96,10 @@ class PipelinePhaseIF(PipelinePhase):
                         registers[get_register_position(next_instruction_code,21,26)].is_waiting_for_use())
         
         #Addi, Lw, Sw
-        elif opcode == '001000' or opcode == '100011' or opcode == '101011':
+        elif opcode == '001000' or opcode == '100011':
             return registers[get_register_position(next_instruction_code,21,26)].is_waiting_for_use()
-        #Beq,Ble
-        elif opcode == '000101' or opcode == '000111' or opcode == '000100':
+        #Beq,Ble, Bne, Sw
+        elif opcode == '000101' or opcode == '000111' or opcode == '000100' or opcode == '101011':
             return (registers[get_register_position(next_instruction_code,16,21)].is_waiting_for_use() or 
                         registers[get_register_position(next_instruction_code,21,26)].is_waiting_for_use())
         #Jmp
@@ -146,6 +146,9 @@ class PipelinePhaseIF(PipelinePhase):
         #se for pra carregar, carrega, e se for de write, seta o next_write_use
         #mexer no pc
         if isinstance(self.current_instruction, NOP):
+            #if we do not have more instructions, we always load NOP() (which is already loaded)
+            if PC_counter.get_value()/4 >= len(PC_array):
+                return
             next_instruction_code = PC_array[PC_counter.get_value()/4]
             if (not self.has_RAW_dependency(next_instruction_code, registers)) and (not self.has_PC_READ_dependency(PC_counter)):
                 self.current_instruction = self.instantiate_instruction(next_instruction_code)
@@ -172,10 +175,10 @@ class PipelinePhaseEX(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseEX, self).__init__()
     
-    def action(self, id_phase, PC_counter):
+    def action(self, id_phase):
         if isinstance(self.current_instruction, NOP):
             self.current_instruction = id_phase.try_to_return_instruction()
-        self.current_instruction.action_EX(PC_counter) 
+        self.current_instruction.action_EX() 
         
     def try_to_return_instruction(self):
         if self.current_instruction.is_finished():
@@ -189,9 +192,9 @@ class PipelinePhaseMEM(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseMEM, self).__init__()
 
-    def action(self, ex_phase, memX, memY):       
+    def action(self, ex_phase, mem, PC_counter):       
         self.current_instruction = ex_phase.try_to_return_instruction()
-        self.current_instruction.action_MEM(memX, memY)
+        self.current_instruction.action_MEM(mem, PC_counter)
     
 
 class PipelinePhaseWB(PipelinePhase):
