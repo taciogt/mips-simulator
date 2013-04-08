@@ -1,31 +1,59 @@
 # coding: utf-8
 
+from threading import Thread
+
 class ProgramController(object):
-	def run_clock(self):
-		pass
 	
-	def run_entire_program(self):
-		pass
+	def __init__(self):
+	    self.pipeline = Pipeline()
+        self.clock_number = 0
+        self.finished_instructions = 0
+	    self.recently_used_mem = [0, 0, 0, 0]
+	    self.should_pause = True
+
+    #this method should be called only by run_one_clock
+    #and by run_clocks_continuously
+	def run_clock(self,phases):
+        self.clock_number+=1
+        
+        #run all phases of pipeline. It is not a loop because 
+        #we decided to make different signatures for each one
+        phases[4].action()
+        phases[3].action()
+        phases[2].action()
+        phases[1].action(self.pipeline.phases[0],self.pipeline.registers)
+        phases[0].action()
+        
+        #stop condition
+        if not self.should_pause:
+            self.run_clock()
+		            
+	def run_one_clock(self):
+	    self.should_pause=True
+	    t = Thread(target=run_clock, args=self)
+        t.start()
+	    
+	def run_clocks_continuously(self):
+        self.should_pause=False
+	    t = Thread(target=run_clock, args=self)
+        t.start()
 	
 	def pause(self):
-	    pass
+	    self.should_pause = True
 	    
 	def openFile(self):
 	    pass
 	
 	#Contains the last four adresses used in memory
-    recently_used_mem = [0, 0, 0, 0]
+    
 	
 	#deletes the oldest memory from our list and adds
-	#a new one. This is used by the GUI to know which 
+	#a new one. This is used by the GUI to know which
 	#were the last 4 used memory adresses and to get their
 	#values (so that they can be shown)
 	def add_used_mem(self, mem_address):
 	    del recently_used_mem[0]
 	    recently_used.append(mem_address)
-	
-    clock_number = 0
-    finished_instructions = 0
     
     def get_productivity(self):
         return finished_instructions/clock_number
