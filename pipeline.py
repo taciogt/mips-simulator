@@ -2,34 +2,33 @@
 
 class Pipeline(object):
 	
+	def __init__(self):
 	
-	registers = []
-	for i in range(32):
-		registers.append(Register())
+	    self.registers = []
+	    for i in range(32):
+		    self.registers.append(Register())
 	
-	phase = []
-	phase.append(PipelinePhaseIF())
-	phase.append(PipelinePhaseID())
-	phase.append(PipelinePhaseEX())
-	phase.append(PipelinePhaseMEM())
-	phase.append(PipelinePhaseWB())
+	    self.phase = []
+	    self.phase.append(PipelinePhaseIF())
+	    self.phase.append(PipelinePhaseID())
+	    self.phase.append(PipelinePhaseEX())
+	    self.phase.append(PipelinePhaseMEM())
+	    self.phase.append(PipelinePhaseWB())
 	
-	memX = []
-	memY = []
+	    self.memX = []
+	    self.memY = []
 	
-	dados = []
+	    self.dados = []
 	
-	PC = []
-	PC_counter = 0
+	    self.PC = []
+	    self.PC_counter = 0
 	
-	controlSignals = {}
-	controlSignals["RegDst"] = 0
-	controlSignals["ALUSrc"] = 0
-	controlSignals["MemtoReg"] = 0
-	controlSignals["RegWrite"] = 0
-	controlSignals["MemWrite"] = 0
-	controlSignals["Branch"] = 0
-	controlSignals["Jump"] = 0
-	controlSignals["ExtOp"] = 0
-	controlSignals["ALUctr<2:0>"] = None
+	    control_signals = {"RegDst":0,
+                           "ALUSrc":0,
+                           "MemtoReg":0,
+                           "RegWrite":0,
+                           "MemWrite":0,
+                           "Branch":0,
+                           "Jump":0,
+                           "ExtOp":0}
 	
