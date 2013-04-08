@@ -1,7 +1,7 @@
 class Register():
-    
+
     def __init__(self):
-        value=0
+        value = 0
         next_write_use = {"last_instruction_to_write": None,
                           "waiting_write": False}
 
@@ -12,14 +12,14 @@ class Register():
                 
         def use():
             return value
-        
+
         def is_waiting_for_use():
             return next_write_use["waiting_write"]
-        
+
         def declare_last_write_use(instruction):
             next_write_use = {"last_instruction_to_write": instruction,
                                 "waiting_write": True}
-        
+
         self.write = write
         self.get_value = use
         self.is_waiting_for_use = is_waiting_for_use

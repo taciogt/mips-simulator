@@ -1,8 +1,9 @@
 # coding: utf-8
+
 import unittest
-import sys
-sys.path.append("../")
-from loader import Loader
+#import sys
+# sys.path.append("../")
+from loader import *
 
 
 class TestLoader(unittest.TestCase):
