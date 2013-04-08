@@ -109,6 +109,8 @@ class ADDi(Instruction):
     def action_WB(self, registers):
         # Rd: 16 to 11
         registers[self.get_register_position(11, 16)].write(self.Rd,self)
+        print self.Rd
+        print "aqui: "+str(registers[self.get_register_position(11, 16)].get_value())
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.

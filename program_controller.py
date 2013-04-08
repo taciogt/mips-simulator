@@ -31,6 +31,8 @@ class ProgramController(object):
         print self.pipeline.registers[10].get_value()
         print self.clock_number
         #stop condition
+        if self.clock_number == 20:
+            self.should_pause = True
         if not self.should_pause:
             self.run_clock(phases)
 		            
