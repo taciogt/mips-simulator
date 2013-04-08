@@ -40,8 +40,7 @@ class PipelinePhaseID(PipelinePhase):
     def action(self, if_phase, registers):
         if isinstance(self.current_instruction, NOP):
             self.current_instruction = if_phase.try_to_return_instruction()
-        self.current_instruction.action_ID(registers)
-        self.current_instruction.action_ID = lambda x : None
+            self.current_instruction.action_ID(registers)
         
 
 class PipelinePhaseEX(PipelinePhase):
