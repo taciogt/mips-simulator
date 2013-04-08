@@ -245,7 +245,7 @@ class BLE(Instruction):
     def action_EX(self, PC_counter):
         if self.Rs<=self.Rt:
            PC_counter.value += 4+ self.Imm
-        pass
+        
              
         
     def action_MEM(self, memX, memY):
@@ -285,7 +285,7 @@ class BNE(Instruction):
         
     def action_EX(self, PC_counter):
         if self.Rs!=self.Rt:
-           PC_counter += 4+ self.Imm
+           PC_counter.value += 4+ self.Imm
         
              
         
@@ -320,11 +320,11 @@ class JMP(Instruction):
         
     def action_ID(self, registers):
         # 26 to 0
-        self.PC = registers[self.get_register_position(0, 26)].value
+        self.PC = self.get_register_position(0, 26)]
         
         
     def action_EX(self, PC_counter):
-        PC_counter = self.PC
+        PC_counter.value = self.PC
         
              
         
@@ -332,8 +332,7 @@ class JMP(Instruction):
         pass
         
     def action_WB(self, registers):
-        # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+       pass
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -363,32 +362,73 @@ class LW(Instruction):
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].value
         # 16 to 0
-        self.Imm = self.get_register_position(0, 16)
+        self.ImmExt = self.get_immediate_value(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs!=self.Rt:
-        #   PC_counter += 4+ self.Imm
         pass
              
         
     def action_MEM(self, memX, memY):
-        pass
+        self.Rt = self.Rs + self.ImmExt
+        
         
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        registers[self.get_register_position(16, 21)] = self.Rt
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
     
     def get_control_signals(self):    
-        control_signals = {"RegDst":None,
-                            "ALUSrc":0,
-                            "MemtoReg":None,
-                            "RegWrite":0,
+        control_signals = {"RegDst":0,
+                            "ALUSrc":1,
+                            "MemtoReg":1,
+                            "RegWrite":1,
                             "MemWrite":0,
-                            "Branch":1,
+                            "Branch":0,
                             "Jump":0,
-                            "ExtOp":None}
+                            "ExtOp":1}
+        return control_signals
+        
+# Instrucao vai ser pc = EndJmp ???
+#nao ta feita!
+class SW(Instruction):
+
+    def __init__(self, instruction_code):
+        self.code = instruction_code
+        
+    def action_ID(self, registers):
+        # 26 to 21
+        self.Rs = registers[self.get_register_position(21, 26)].value
+        # 21 to 16
+        self.Rt = registers[self.get_register_position(16, 21)].value
+        # 16 to 0
+        self.ImmExt = self.get_immediate_value(0, 16)
+        
+    def action_EX(self, PC_counter):
+        pass
+             
+        
+    def action_MEM(self, memX, memY):
+        self.Rt = self.Rs + self.ImmExt
+        
+        
+    def action_WB(self, registers):
+        # Rd: 16 to 11
+        registers[self.get_register_position(16, 21)] = self.Rt
+        
+    # Returns a dictionary with the control signal names as keys and
+    # the bits (0 or 1) as values.
+    # These bits should be looked at the third pipeline PDF from the Professor
+    
+    def get_control_signals(self):    
+        control_signals = {"RegDst":0,
+                            "ALUSrc":1,
+                            "MemtoReg":1,
+                            "RegWrite":1,
+                            "MemWrite":0,
+                            "Branch":0,
+                            "Jump":0,
+                            "ExtOp":1}
         return control_signals
