@@ -18,9 +18,9 @@ class ProgramController(object):
         
         #run all phases of pipeline. It is not a loop because 
         #we decided to make different signatures for each one
-        phases[4].action()
-        phases[3].action()
-        phases[2].action()
+        phases[4].action(self.pipeline.phases[3],self.pipeline.registers)
+        phases[3].action(self.pipeline.phases[2],self.pipeline.memX,self.pipeline.memY)
+        phases[2].action(self.pipeline.phases[1],self.pipeline.PC_counter)
         phases[1].action(self.pipeline.phases[0],self.pipeline.registers)
         phases[0].action()
         

@@ -5,11 +5,17 @@ class Instruction():
     
     def get_register_position(self, start, end):
         
-        if start == 0:
+        if start == 0 and end!=32:
             b = BitArray(self.code[-end:])
             return b.uint
-        else:
+        else if start != 0 and end!=32:
             b = BitArray(self.code[-end:-start])
+            return b.uint
+        else start != 0 and end==32:
+            b = BitArray(self.code[:-start])
+            return b.uint
+        else start == 0 and end==32:
+            b = BitArray(self.code[:])
             return b.uint
 
     def get_immediate_value(self):
@@ -196,17 +202,15 @@ class BEQ(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs==self.Rt:
-        #   PC_counter += 4+ self.Imm
-        pass
+        if self.Rs==self.Rt:
+           PC_counter.value += 4+ self.Imm
              
         
     def action_MEM(self, memX, memY):
         pass
         
     def action_WB(self, registers):
-        # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+       pass
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -239,8 +243,8 @@ class BLE(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs<=self.Rt:
-        #   PC_counter += 4+ self.Imm
+        if self.Rs<=self.Rt:
+           PC_counter.value += 4+ self.Imm
         pass
              
         
@@ -248,8 +252,7 @@ class BLE(Instruction):
         pass
         
     def action_WB(self, registers):
-        # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        pass
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -281,9 +284,9 @@ class BNE(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs!=self.Rt:
-        #   PC_counter += 4+ self.Imm
-        pass
+        if self.Rs!=self.Rt:
+           PC_counter += 4+ self.Imm
+        
              
         
     def action_MEM(self, memX, memY):
@@ -309,7 +312,47 @@ class BNE(Instruction):
         return control_signals
 
 # Instrucao vai ser pc = EndJmp ???
+#nao ta feita!
 class JMP(Instruction):
+
+    def __init__(self, instruction_code):
+        self.code = instruction_code
+        
+    def action_ID(self, registers):
+        # 26 to 0
+        self.PC = registers[self.get_register_position(0, 26)].value
+        
+        
+    def action_EX(self, PC_counter):
+        PC_counter = self.PC
+        
+             
+        
+    def action_MEM(self, memX, memY):
+        pass
+        
+    def action_WB(self, registers):
+        # Rd: 16 to 11
+        registers[self.get_register_position(11, 16)] = self.Rd
+        
+    # Returns a dictionary with the control signal names as keys and
+    # the bits (0 or 1) as values.
+    # These bits should be looked at the third pipeline PDF from the Professor
+    
+    def get_control_signals(self):    
+        control_signals = {"RegDst":None,
+                            "ALUSrc":None,
+                            "MemtoReg":None,
+                            "RegWrite":0,
+                            "MemWrite":0,
+                            "Branch":0,
+                            "Jump":1,
+                            "ExtOp":None}
+        return control_signals
+
+# Instrucao vai ser pc = EndJmp ???
+#nao ta feita!
+class LW(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code

@@ -21,7 +21,7 @@ class Pipeline(object):
 	    self.dados = []
 	
 	    self.PC = []
-	    self.PC_counter = 0
+	    self.PC_counter = Register()
 	
 	    control_signals = {"RegDst":0,
                            "ALUSrc":0,
