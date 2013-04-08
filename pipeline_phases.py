@@ -23,6 +23,11 @@ class PipelinePhaseIF(PipelinePhase):
         super(PipelinePhaseIF, self).__init__()
     
     def action(self):
+        #ver se é pra carregar uma nova instrução ou deixar a q tá (caso do MUL)
+        #pegar a instrução, ver qual registradores usa, ver se pode carregar ou se é NOP
+        #ver se o pc tá sendo usado pra write
+        #se for pra carregar, carrega, e se for de write, seta o next_write_use
+        #mexer no pc
         pass
 
 
