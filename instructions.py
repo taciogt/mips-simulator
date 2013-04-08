@@ -5,11 +5,17 @@ class Instruction():
     
     def get_register_position(self, start, end):
         
-        if start == 0:
+        if start == 0 and end!=32:
             b = BitArray(self.code[-end:])
             return b.uint
-        else:
+        else if start != 0 and end!=32:
             b = BitArray(self.code[-end:-start])
+            return b.uint
+        else start != 0 and end==32:
+            b = BitArray(self.code[:-start])
+            return b.uint
+        else start == 0 and end==32:
+            b = BitArray(self.code[:])
             return b.uint
 
     def get_immediate_value(self):
@@ -197,16 +203,14 @@ class BEQ(Instruction):
         
     def action_EX(self, PC_counter):
         if self.Rs==self.Rt:
-           PC_counter += 4+ self.Imm
-        pass
+           PC_counter.value += 4+ self.Imm
              
         
     def action_MEM(self, memX, memY):
         pass
         
     def action_WB(self, registers):
-        # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+       pass
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -240,7 +244,7 @@ class BLE(Instruction):
         
     def action_EX(self, PC_counter):
         if self.Rs<=self.Rt:
-           PC_counter += 4+ self.Imm
+           PC_counter.value += 4+ self.Imm
         pass
              
         
@@ -248,8 +252,7 @@ class BLE(Instruction):
         pass
         
     def action_WB(self, registers):
-        # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)] = self.Rd
+        pass
         
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -283,7 +286,7 @@ class BNE(Instruction):
     def action_EX(self, PC_counter):
         if self.Rs!=self.Rt:
            PC_counter += 4+ self.Imm
-        pass
+        
              
         
     def action_MEM(self, memX, memY):
@@ -316,17 +319,13 @@ class JMP(Instruction):
         self.code = instruction_code
         
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].value
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].value
-        # 16 to 0
-        self.Imm = self.get_register_position(0, 16)
+        # 26 to 0
+        self.PC = registers[self.get_register_position(0, 26)].value
+        
         
     def action_EX(self, PC_counter):
-        #if self.Rs!=self.Rt:
-        #   PC_counter += 4+ self.Imm
-        pass
+        PC_counter = self.PC
+        
              
         
     def action_MEM(self, memX, memY):
@@ -342,12 +341,12 @@ class JMP(Instruction):
     
     def get_control_signals(self):    
         control_signals = {"RegDst":None,
-                            "ALUSrc":0,
+                            "ALUSrc":None,
                             "MemtoReg":None,
                             "RegWrite":0,
                             "MemWrite":0,
-                            "Branch":1,
-                            "Jump":0,
+                            "Branch":0,
+                            "Jump":1,
                             "ExtOp":None}
         return control_signals
 
