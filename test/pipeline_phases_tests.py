@@ -13,11 +13,13 @@ class PipelinePhasesTests(unittest.TestCase):
 
     def test_not_implemented_method(self):
         self.assertRaises(NotImplementedError, PipelinePhase().action)
-        self.assertRaises(NotImplementedError, PipelinePhase().try_to_get_instruction)
+        self.assertRaises(NotImplementedError, PipelinePhase().try_to_return_instruction)
+
+    
 
     def test_nop_as_default(self):
         for p in self.pipelines:
-            self.assertTrue(isinstance(p.current_phase, instructions.NOP))
+            self.assertTrue(isinstance(p.current_instruction, instructions.NOP))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
