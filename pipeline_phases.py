@@ -46,6 +46,13 @@ class PipelinePhaseEX(PipelinePhase):
         if isinstance(self.current_instruction, NOP):
             self.current_instruction = id_phase.try_to_return_instruction()
         self.current_instruction.action_EX() 
+        
+    def try_to_return_instruction(self):
+        if self.current_instruction.is_finished():
+            return PipelinePhase.try_to_return_instruction(self)
+        else:
+            return NOP()
+            
 
 class PipelinePhaseMEM(PipelinePhase):
     
