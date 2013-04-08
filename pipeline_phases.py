@@ -1,41 +1,56 @@
 # coding: utf-8
 
-import instructions.NOP, instructions.MUL
+from instructions import NOP
 
 
-class PipelinePhase:
+class PipelinePhase(object):
     def __init__(self):
-        self.current_phase = instructions.NOP()
+        self.current_phase = NOP()
 
 
 class PipelinePhaseIF(PipelinePhase):
     
-    current_instruction = None
+    def __init__(self):
+        super(PipelinePhaseIF, self).__init__()
+    
     def action(self):
         pass
 
 
-class PipelinePhaseID:
+class PipelinePhaseID(PipelinePhase):
+    
+    def __init__(self):
+        super(PipelinePhaseID, self).__init__()
 
-    def action(self, phase, registers):
-        self.current_instruction = phase.current_instruction
+    def action(self, first_phase, registers):
+        self.current_instruction = first_phase.current_instruction
         self.current_instruction.action_ID(registers)
 
 
-class PipelinePhaseEX():
+class PipelinePhaseEX(PipelinePhase):
+    
+    def __init__(self):
+        super(PipelinePhaseEX, self).__init__()
     
     def action(self):
-        if isinstance(self.current_instruction, instructions.MUL):
-            if True:
-                pass    
+        pass
+#        if isinstance(self.current_instruction, instructions.MUL):
+#            if True:
+#                pass    
 
-class PipelinePhaseMEM():
+class PipelinePhaseMEM(PipelinePhase):
+    
+    def __init__(self):
+        super(PipelinePhaseMEM, self).__init__()
 
     def action(self):
         pass
     
 
-class PipelinePhaseWB():
+class PipelinePhaseWB(PipelinePhase):
+    
+    def __init__(self):
+        super(PipelinePhaseWB, self).__init__()
 
     def action(self):
         pass
