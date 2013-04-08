@@ -196,8 +196,8 @@ class BEQ(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs==self.Rt:
-        #   PC_counter += 4+ self.Imm
+        if self.Rs==self.Rt:
+           PC_counter += 4+ self.Imm
         pass
              
         
@@ -239,8 +239,8 @@ class BLE(Instruction):
         self.Imm = self.get_register_position(0, 16)
         
     def action_EX(self, PC_counter):
-        #if self.Rs<=self.Rt:
-        #   PC_counter += 4+ self.Imm
+        if self.Rs<=self.Rt:
+           PC_counter += 4+ self.Imm
         pass
              
         
@@ -268,6 +268,49 @@ class BLE(Instruction):
 
 # Instrucao vai ser if(Rs!=Rt) => pc+=4+Imm
 class BNE(Instruction):
+
+    def __init__(self, instruction_code):
+        self.code = instruction_code
+        
+    def action_ID(self, registers):
+        # 26 to 21
+        self.Rs = registers[self.get_register_position(21, 26)].value
+        # 21 to 16
+        self.Rt = registers[self.get_register_position(16, 21)].value
+        # 16 to 0
+        self.Imm = self.get_register_position(0, 16)
+        
+    def action_EX(self, PC_counter):
+        if self.Rs!=self.Rt:
+           PC_counter += 4+ self.Imm
+        pass
+             
+        
+    def action_MEM(self, memX, memY):
+        pass
+        
+    def action_WB(self, registers):
+        # Rd: 16 to 11
+        registers[self.get_register_position(11, 16)] = self.Rd
+        
+    # Returns a dictionary with the control signal names as keys and
+    # the bits (0 or 1) as values.
+    # These bits should be looked at the third pipeline PDF from the Professor
+    
+    def get_control_signals(self):    
+        control_signals = {"RegDst":None,
+                            "ALUSrc":0,
+                            "MemtoReg":None,
+                            "RegWrite":0,
+                            "MemWrite":0,
+                            "Branch":1,
+                            "Jump":0,
+                            "ExtOp":None}
+        return control_signals
+
+# Instrucao vai ser pc = EndJmp ???
+#nao ta feita!
+class JMP(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
@@ -309,7 +352,8 @@ class BNE(Instruction):
         return control_signals
 
 # Instrucao vai ser pc = EndJmp ???
-class JMP(Instruction):
+#nao ta feita!
+class LW(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
