@@ -24,7 +24,7 @@ class Instruction():
     def get_immediate_value(self):
 
         b = BitArray(bin=self.code[-16:])
-        return b.int
+        return int(b.int)
 
     def action_ID(self, registers):
         raise NotImplementedError('This is an abstract class.')
@@ -242,8 +242,12 @@ class BEQ(Instruction):
              
         
     def action_MEM(self, mem, PC_counter):
+        print (self.Rs)
+        print (self.Rt)
         if self.Rs == self.Rt:
            PC_counter.write((PC_counter.get_value()+self.Imm),self)
+        else:
+            PC_counter.concede_right_to_use(self)
         
     def action_WB(self, registers):
        pass
@@ -268,7 +272,7 @@ class BEQ(Instruction):
         return "BEQ R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))+", "+str(self.get_register_position(0, 16))
 
 
-# Instrucao vai ser if(Rs<=Rt) => pc+=4+Imm
+# Instrucao vai ser if(Rs<=Rt) => pc=Imm
 class BLE(Instruction):
 
     def __init__(self, instruction_code):
@@ -288,7 +292,9 @@ class BLE(Instruction):
         
     def action_MEM(self, mem, PC_counter):
         if self.Rs <= self.Rt:
-           PC_counter.write((PC_counter.get_value()+self.Imm),self)
+           PC_counter.write((self.Imm),self)
+        else:
+            PC_counter.concede_right_to_use(self)   
         
     def action_WB(self, registers):
         pass
@@ -332,6 +338,8 @@ class BNE(Instruction):
     def action_MEM(self, mem, PC_counter):
         if self.Rs != self.Rt:
            PC_counter.write((PC_counter.get_value()+self.Imm),self)
+        else:
+            PC_counter.concede_right_to_use(self)
         
     def action_WB(self, registers):
         pass
@@ -409,7 +417,7 @@ class LW(Instruction):
              
         
     def action_MEM(self, mem, PC_counter):
-        self.Rt = mem[(self.Rs + self.ImmExt)/4]
+        self.Rt = mem[(self.Rs + self.ImmExt - 1000)/4]
         
         
     def action_WB(self, registers):
@@ -452,7 +460,7 @@ class SW(Instruction):
         pass
              
     def action_MEM(self, mem, PC_counter):
-        mem[(self.Rs+self.ImmExt)/4] = self.Rt
+        mem[(self.Rs+self.ImmExt - 1000)/4] = self.Rt
         
     def action_WB(self, registers):
         pass
