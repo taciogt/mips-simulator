@@ -239,7 +239,7 @@ class BEQ(Instruction):
         
     def action_MEM(self, mem, PC_counter):
         if self.Rs == self.Rt:
-           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
+           PC_counter.write((PC_counter.get_value()+self.Imm),self)
         
     def action_WB(self, registers):
        pass
@@ -258,6 +258,9 @@ class BEQ(Instruction):
                             "Jump":0,
                             "ExtOp":'x'}
         return control_signals
+
+     def __str__(self):
+        return "BEQ R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))+", "+str(self.get_register_position(0, 16))
 
 
 # Instrucao vai ser if(Rs<=Rt) => pc+=4+Imm
@@ -280,7 +283,7 @@ class BLE(Instruction):
         
     def action_MEM(self, mem, PC_counter):
         if self.Rs <= self.Rt:
-           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
+           PC_counter.write((PC_counter.get_value()+self.Imm),self)
         
     def action_WB(self, registers):
         pass
@@ -299,6 +302,9 @@ class BLE(Instruction):
                             "Jump":0,
                             "ExtOp":'x'}
         return control_signals
+
+    def __str__(self):
+        return "BLE R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))+", "+str(self.get_register_position(0, 16))
 
 # Instrucao vai ser if(Rs!=Rt) => pc+=4+Imm
 class BNE(Instruction):
@@ -320,7 +326,7 @@ class BNE(Instruction):
         
     def action_MEM(self, mem, PC_counter):
         if self.Rs != self.Rt:
-           PC_counter.write((PC_counter.get_value()+4+self.Imm),self)
+           PC_counter.write((PC_counter.get_value()+self.Imm),self)
         
     def action_WB(self, registers):
         pass
@@ -339,6 +345,9 @@ class BNE(Instruction):
                             "Jump":0,
                             "ExtOp":'x'}
         return control_signals
+
+    def __str__(self):
+        return "BNE R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))+", "+str(self.get_register_position(0, 16))
 
 
 class JMP(Instruction):
@@ -374,6 +383,9 @@ class JMP(Instruction):
                             "Jump":1,
                             "ExtOp":"x"}
         return control_signals
+
+    def __str__(self):
+        return "JMP "+str(self.get_register_position(0, 26))
 
 
 class LW(Instruction):
@@ -413,6 +425,9 @@ class LW(Instruction):
                             "Jump":0,
                             "ExtOp":1}
         return control_signals
+
+    def __str__(self):
+        return "LW R"+str(self.get_register_position(16, 21))+", "+str(self.get_immediate_value())+"("+str(self.get_register_position(21, 26))+")"
         
 
 class SW(Instruction):
@@ -450,3 +465,7 @@ class SW(Instruction):
                             "Jump":0,
                             "ExtOp":1}
         return control_signals
+
+    def __str__(self):
+        return "SW R"+str(self.get_register_position(16, 21))+", "+str(self.get_immediate_value())+"("+str(self.get_register_position(21, 26))+")"
+    
