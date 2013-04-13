@@ -3,7 +3,7 @@
 import unittest
 #import sys
 # sys.path.append("../")
-from loader import *
+from src.loader import *
 
 
 class TestLoader(unittest.TestCase):

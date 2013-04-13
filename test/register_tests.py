@@ -2,7 +2,7 @@
 
 import sys
 sys.path.append("../")
-from register import * 
+from src.register import * 
 
 r = Register()
 r.write(10,None)

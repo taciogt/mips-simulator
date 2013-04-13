@@ -1,9 +1,8 @@
 # coding: utf-8
 import sys
 sys.path.append("../")
-import program_controller
-from program_controller import ProgramController
-from loader import Loader
+from src.program_controller import ProgramController
+from src.loader import Loader
 
 controller = ProgramController()
 l = Loader()

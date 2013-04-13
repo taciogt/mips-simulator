@@ -1,8 +1,8 @@
 # coding: utf-8
 
 import unittest
-from pipeline_phases import *
-import instructions
+from src.pipeline_phases import *
+from src import instructions
 
 
 class PipelinePhasesTests(unittest.TestCase):

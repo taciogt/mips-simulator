@@ -1,8 +1,8 @@
 # coding: utf-8
 
 import unittest
-from instructions import *
-from Register import * 
+from src.instructions import *
+from src.register import * 
 
 class InstructionsTests(unittest.TestCase):
     def test_not_implemented_methods(self):
