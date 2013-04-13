@@ -259,7 +259,7 @@ class BEQ(Instruction):
                             "ExtOp":'x'}
         return control_signals
 
-     def __str__(self):
+    def __str__(self):
         return "BEQ R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))+", "+str(self.get_register_position(0, 16))
 
 
