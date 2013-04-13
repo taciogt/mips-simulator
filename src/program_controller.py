@@ -63,21 +63,20 @@ class ProgramController(object):
         t.start()
 
     def pause(self):
-	    self.should_pause = True
-	    
+        self.should_pause = True
+
     def openFile(self):
-	    pass
-	
-	#Contains the last four adresses used in memory
-    
-	
-	#deletes the oldest memory from our list and adds
-	#a new one. This is used by the GUI to know which
-	#were the last 4 used memory adresses and to get their
-	#values (so that they can be shown)
+        pass
+
+    #Contains the last four adresses used in memory
+
+    #deletes the oldest memory from our list and adds
+    #a new one. This is used by the GUI to know which
+    #were the last 4 used memory adresses and to get their
+    #values (so that they can be shown)
     def add_used_mem(self, mem_address):
-	    del recently_used_mem[0]
-	    recently_used.append(mem_address)
-    
+        del recently_used_mem[0]
+        recently_used.append(mem_address)
+
     def get_productivity(self):
         return finished_instructions/clock_number
