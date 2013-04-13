@@ -22,10 +22,9 @@ class Instruction():
             return b.uint
 
     def get_immediate_value(self):
-        
+
         b = BitArray(bin=self.code[-16:])
         return b.int
-
 
     def action_ID(self, registers):
         raise NotImplementedError('This is an abstract class.')
@@ -37,7 +36,7 @@ class Instruction():
         raise NotImplementedError('This is an abstract class.')
 
     def action_WB(self, registers):
-        raise NotImplementedError('This is an abstract class.')    
+        raise NotImplementedError('This is an abstract class.')
 
 
 class NOP(Instruction):
@@ -52,25 +51,26 @@ class NOP(Instruction):
 
     def action_WB(self, registers):
         pass
-        
+
     def __str__(self):
         return "NOP"
-       
+
+
 # Instrucao vai ser Rd = Rs + Rt
 class ADD(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 21
         self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
-        
+
     def action_EX(self):
         self.Rd = self.Rs + self.Rt
-        
+
     def action_MEM(self, mem, PC_counter):
         pass
         
@@ -91,7 +91,7 @@ class ADD(Instruction):
                             "Jump":0,
                             "ExtOp":'x'}
         return control_signals
-    
+
     def __str__(self):
         return "ADD R"+str(self.get_register_position(11, 16))+", R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))
 
@@ -201,7 +201,7 @@ class MUL(Instruction):
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
-    
+
     def get_control_signals(self):    
         control_signals = {"RegDst":1,
                             "ALUSrc":0,
@@ -212,10 +212,10 @@ class MUL(Instruction):
                             "Jump":0,
                             "ExtOp":"x"}
         return control_signals
-    
+
     def is_finished(self):
         return self.execution_state == 0
-    
+
     def __str__(self):
         return "MUL R"+str(self.get_register_position(11, 16))+", R"+str(self.get_register_position(21, 26))+", R"+str(self.get_register_position(16, 21))
 
@@ -224,7 +224,7 @@ class BEQ(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 21
         self.Rs = registers[self.get_register_position(21, 26)].get_value()
