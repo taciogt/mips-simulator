@@ -3,6 +3,7 @@
 from instructions import *
 from bitstring import BitArray
 
+
 def get_register_position(code, start, end):
 
     if start == 0 and end != 31:
@@ -28,8 +29,6 @@ class PipelinePhase(object):
         raise NotImplementedError('Method from an abstract class')
 
     def try_to_return_instruction(self):
-#        if isinstance(self, PipelinePhase):
-#            raise NotImplementedError('Method of an abstract class')
         instruction_to_pass = self.current_instruction
         self.current_instruction = NOP()
         return instruction_to_pass

@@ -73,11 +73,11 @@ class ADD(Instruction):
 
     def action_MEM(self, mem, PC_counter):
         pass
-        
+
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)].write(self.Rd,self)
-        
+        registers[self.get_register_position(11, 16)].write(self.Rd, self)
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
