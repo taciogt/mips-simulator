@@ -11,8 +11,8 @@ if __name__ == '__main__':
     #controller.pipeline.PC = ["00100000000010100000000001100100", "00100000000010100000000001100100",
     #                            "00100000000010100000000001100100", "00100000000010100000000001100100"]
     #controller.run_clocks_continuously()
-    
-    
+
+
     #controller = ProgramController()
     ##addi : R0 = 100
     ##addi : R1 = 100
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     #controller.pipeline.PC = ["00100010000000000000000001100100","00100010000000010000000001100100",
     #                          "00000000000000010001000000100000" ]
     #controller.run_clocks_continuously()
-    
+
     controller = ProgramController()
     ##addi : R0 = 100
     ##addi : R1 = 100
