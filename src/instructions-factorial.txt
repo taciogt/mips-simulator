@@ -1,0 +1,10 @@
+SUB R0, R1, R1 ; R0 armazena o inteiro 0
+ADDI R1, R0, 1 ; R1 armazena o inteiro 1
+LW R4, R0(1000) ; O número a ser calculado o fatorial está na primeira posição da memória
+ADDI R2, R4, 0
+BEQ R2, R1, !!! (=FIM?)
+SUB R3, R2, R1
+MUL R5, R2, R3
+ADDI R2, R3, 0
+JMP 16 ; Linha 5 do arquivo, instrução BEQ
+SW R5, R0(1004) ; Armazena na segunda posição da memória o resultado do fatorial
