@@ -1,8 +1,8 @@
 # coding: utf-8
 
 from threading import Thread
-from pipeline import *
-from register import *
+from src.pipeline import *
+from src.register import *
 
 
 def printPhases(phases):
