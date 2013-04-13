@@ -196,3 +196,15 @@ class PipelinePhaseWB(PipelinePhase):
     def action(self, mem_phase, registers):
         self.current_instruction = mem_phase.try_to_return_instruction()
         self.current_instruction.action_WB(registers)
+
+
+class PipelinePhaseIF_Bypassing(PipelinePhaseIF):
+
+    def __init__(self):
+        super(PipelinePhaseIF, self).__init__()
+
+    def has_RAW_dependency(self, next_instruction, registers):
+        if isinstance(next_instruction, LW):
+            pass
+            # return registers[get_register_position(next_instruction_code, 21, 26)].is_waiting_for_use()
+        return False

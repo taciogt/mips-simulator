@@ -7,9 +7,9 @@ class Register():
 
         def write(new_value, instruction):
             value[1] = new_value
-            if next_write_use["last_instruction_to_write"]==instruction:
+            if next_write_use["last_instruction_to_write"] == instruction:
                 next_write_use["waiting_write"] = False
-                
+
         def use():
             return value[1]
 
@@ -17,7 +17,7 @@ class Register():
             return next_write_use["waiting_write"]
 
         def declare_last_write_use(instruction):
-            next_write_use["last_instruction_to_write"]= instruction
+            next_write_use["last_instruction_to_write"] = instruction
             next_write_use["waiting_write"] = True
 
         self.write = write
