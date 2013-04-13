@@ -56,6 +56,10 @@ class NOP(Instruction):
         return "NOP"
 
 
+
+
+
+
 # Instrucao vai ser Rd = Rs + Rt
 class ADD(Instruction):
 
