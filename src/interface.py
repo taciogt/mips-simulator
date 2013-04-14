@@ -2,6 +2,7 @@
 import Tkinter as tk
 from program_controller import ProgramController
 from loader import Loader
+import time
 
 
 class Interface(tk.Tk):
@@ -122,11 +123,12 @@ class Interface(tk.Tk):
 
         # Binding dos botões
 
-        self.bind("<Return>", lambda *ignore: self.setInstructions())
+        self.bind("<Button-1>", lambda *ignore: self.setInstructions())
         self.setInstructions()
 
     def setInstructions(self):
         self.controller.run_one_clock()
+        time.sleep(0.01)
         self.instrucao_if.set(str(self.controller.pipeline.phases[0].current_instruction))
         self.instrucao_di_rf.set(str(self.controller.pipeline.phases[1].current_instruction))
         self.instrucao_ex.set(str(self.controller.pipeline.phases[2].current_instruction))
@@ -142,19 +144,19 @@ def main():
     controller.pipeline.mem = l.get_mem_x()
     controller.pipeline.mem.extend(l.get_mem_y())
     controller.pipeline.PC = ["00100000000000100000000000000010",
-                          "00100000000001010000001111101000",
-                          "00100000000001100001001110001000",
-                          "00100000000000010000000000000000",
-                          "00100000000001110000001111101000",
-                          "10001100101011110000000000000000",
-                          "00000001111000100111100000011000",
-                          "10001100110100000000000000000000",
-                          "00000001111100001000000000100000",
-                          "10101100110100000000000000000000",
-                          "00100000001000010000000000000001",
-                          "00100000101001010000000000000100",
-                          "00100000110001100000000000000100",
-                          "00011100001001110000000000010100"]
+                              "00100000000001010000001111101000",
+                              "00100000000001100001001110001000",
+                              "00100000000000010000000000000000",
+                              "00100000000001110000001111101000",
+                              "10001100101011110000000000000000",
+                              "00000001111000100111100000011000",
+                              "10001100110100000000000000000000",
+                              "00000001111100001000000000100000",
+                              "10101100110100000000000000000000",
+                              "00100000001000010000000000000001",
+                              "00100000101001010000000000000100",
+                              "00100000110001100000000000000100",
+                              "00011100001001110000000000010100"]
     interface.mainloop()
 
 
