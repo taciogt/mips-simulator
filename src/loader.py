@@ -24,11 +24,12 @@ class Loader(object):
         return self.pc
 
     def read_mem_values(self):
-        f = open('mem.txt','r')
+        f = open('../src/mem.txt','r')
+
         for line in f:
             x, y = line.split()
-            self.mem_x.append(x)
-            self.mem_y.append(y)
+            self.mem_x.append(int(x))
+            self.mem_y.append(int(y))
 
     def get_mem_x(self):
         return self.mem_x

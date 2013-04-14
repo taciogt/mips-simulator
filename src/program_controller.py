@@ -42,7 +42,6 @@ class ProgramController(object):
         #this is here for debugging
         print self.clock_number
         print "=========="
-        print self.pipeline.registers[2].get_value()
         printPhases(phases)
         print "=========="
 
