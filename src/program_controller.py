@@ -88,3 +88,9 @@ class ProgramController(object):
             str(self.pipeline.phases[3].current_instruction),
             str(self.pipeline.phases[4].current_instruction),
         ]
+
+    def get_pipeline_registers_value(self):
+        values = []
+        for register in self.pipeline.registers:
+            values.append(register.get_value())
+        return values

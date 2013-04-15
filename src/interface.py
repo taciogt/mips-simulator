@@ -343,24 +343,26 @@ class Interface(tk.Tk):
 
         # Binding dos botões
 
-        self.bind("<Button-1>", lambda *ignore: self.setInstructions())
-        self.setInstructions()
+        self.bind("<Button-1>", lambda *ignore: self.run_one_clock())
 
-    def setInstructions(self):
-        # Importante rodar essa parte em uma Thread para poder esperar o
-        # self.controller.run_one_clock() terminar de atualizar as variáveis
-        # antes de atualizar a interface (tava dando uns problemas de
-        # sincronismo) e o join() faz isso.
+        # Roda a primeira vez, para iniciar os valores
+        self.run_one_clock()
+
+    def run_one_clock(self):
+        self.controller.run_one_clock()
 
         # t = Thread(target=self.controller.run_one_clock)
         # t.start()
         # t.join()
 
         # Pausando através do "time", apenas para testar
-
-        self.controller.run_one_clock()
         import time
         time.sleep(0.01)
+
+        self.setInstructions()
+        self.setRegisters()
+
+    def setInstructions(self):
 
         pipeline_instructions = self.controller.get_pipeline_phases_current_instruction()
 
@@ -371,38 +373,41 @@ class Interface(tk.Tk):
         self.instrucao_wb.set(pipeline_instructions[4])
 
     def setRegisters(self):
-        self.r0.set(
-        self.r1.set(
-        self.r2.set(
-        self.r3.set(
-        self.r4.set(
-        self.r5.set(
-        self.r6.set(
-        self.r7.set(
-        self.r8.set(
-        self.r9.set(
-        self.r10.set(
-        self.r11.set(
-        self.r12.set(
-        self.r13.set(
-        self.r14.set(
-        self.r15.set(
-        self.r16.set(
-        self.r17.set(
-        self.r18.set(
-        self.r19.set(
-        self.r20.set(
-        self.r21.set(
-        self.r22.set(
-        self.r23.set(
-        self.r24.set(
-        self.r25.set(
-        self.r26.set(
-        self.r27.set(
-        self.r28.set(
-        self.r29.set(
-        self.r30.set(
-        self.r31.set(
+
+        pipeline_registers = self.controller.get_pipeline_registers_value()
+
+        self.r0.set(pipeline_registers[0])
+        self.r1.set(pipeline_registers[1])
+        self.r2.set(pipeline_registers[2])
+        self.r3.set(pipeline_registers[3])
+        self.r4.set(pipeline_registers[4])
+        self.r5.set(pipeline_registers[5])
+        self.r6.set(pipeline_registers[6])
+        self.r7.set(pipeline_registers[7])
+        self.r8.set(pipeline_registers[8])
+        self.r9.set(pipeline_registers[9])
+        self.r10.set(pipeline_registers[10])
+        self.r11.set(pipeline_registers[11])
+        self.r12.set(pipeline_registers[12])
+        self.r13.set(pipeline_registers[13])
+        self.r14.set(pipeline_registers[14])
+        self.r15.set(pipeline_registers[15])
+        self.r16.set(pipeline_registers[16])
+        self.r17.set(pipeline_registers[17])
+        self.r18.set(pipeline_registers[18])
+        self.r19.set(pipeline_registers[19])
+        self.r20.set(pipeline_registers[20])
+        self.r21.set(pipeline_registers[21])
+        self.r22.set(pipeline_registers[22])
+        self.r23.set(pipeline_registers[23])
+        self.r24.set(pipeline_registers[24])
+        self.r25.set(pipeline_registers[25])
+        self.r26.set(pipeline_registers[26])
+        self.r27.set(pipeline_registers[27])
+        self.r28.set(pipeline_registers[28])
+        self.r29.set(pipeline_registers[29])
+        self.r30.set(pipeline_registers[30])
+        self.r31.set(pipeline_registers[31])
 
 
 def main():
