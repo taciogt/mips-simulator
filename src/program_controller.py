@@ -79,3 +79,12 @@ class ProgramController(object):
 
     def get_productivity(self):
         return finished_instructions/clock_number
+
+    def get_pipeline_phases_current_instruction(self):
+        return [
+            str(self.pipeline.phases[0].current_instruction),
+            str(self.pipeline.phases[1].current_instruction),
+            str(self.pipeline.phases[2].current_instruction),
+            str(self.pipeline.phases[3].current_instruction),
+            str(self.pipeline.phases[4].current_instruction),
+        ]
