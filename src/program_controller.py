@@ -3,6 +3,7 @@
 from threading import Thread
 from pipeline import *
 from register import *
+import time
 
 
 def printPhases(phases):
@@ -19,6 +20,7 @@ class ProgramController(object):
         self.recently_used_mem = [0, 0, 0, 0]
         self.should_pause = True
         self.pipeline.PC = []
+        self.interface = None
 
     def all_phases_NOP(self, phases):
         res = True
@@ -31,6 +33,18 @@ class ProgramController(object):
     def run_clock(self, phases):
         self.clock_number += 1
 
+        # this variable is important not to update pipeline values with
+        # 'should_pause' set to True (this condition avoid recursion, but
+        # run_clock() executes one last time)
+        if self.update_pipeline:
+            self.run_pipeline_phases(phases)
+
+        self.interface.update_interface()
+        if not self.should_pause:
+            time.sleep(2)
+            self.run_clock(phases)
+
+    def run_pipeline_phases(self, phases):
         #run all phases of pipeline. It is not a loop because
         #we decided to make different signatures for each one
         phases[4].action(self.pipeline.phases[3], self.pipeline.registers)
@@ -48,21 +62,22 @@ class ProgramController(object):
         #stop condition
         if (self.pipeline.PC_counter.get_value() >= len(self.pipeline.PC)) and self.all_phases_NOP(phases):
             self.should_pause = True
-        if not self.should_pause:
-            self.run_clock(phases)
 
     def run_one_clock(self):
+        self.update_pipeline = True
         self.should_pause = True
         t = Thread(target=self.run_clock, args=(self.pipeline.phases,))
         t.start()
 
     def run_clocks_continuously(self):
+        self.update_pipeline = True
         self.should_pause = False
         t = Thread(target=self.run_clock, args=(self.pipeline.phases,))
         t.start()
 
     def pause(self):
         self.should_pause = True
+        self.update_pipeline = False
 
     def openFile(self):
         pass
