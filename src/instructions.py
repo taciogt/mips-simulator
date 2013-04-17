@@ -1,13 +1,14 @@
 # coding: utf-8
 from bitstring import BitArray
 
+
 class Instruction():
-    
+
     def is_finished(self):
         return True
-    
+
     def get_register_position(self, start, end):
-        
+
         if start == 0 and end != 31:
             b = BitArray(bin=self.code[-end:])
             return b.uint
@@ -32,10 +33,13 @@ class Instruction():
     def action_EX(self):
         raise NotImplementedError('This is an abstract class.')
 
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         raise NotImplementedError('This is an abstract class.')
 
     def action_WB(self, registers):
+        raise NotImplementedError('This is an abstract class.')
+
+    def get_control_signals(self):
         raise NotImplementedError('This is an abstract class.')
 
 
@@ -46,7 +50,7 @@ class NOP(Instruction):
     def action_EX(self):
         pass
 
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         pass
 
     def action_WB(self, registers):
@@ -55,9 +59,8 @@ class NOP(Instruction):
     def __str__(self):
         return "NOP"
 
-
-
-
+    def get_control_signals(self):
+        return {}
 
 
 # Instrucao vai ser Rd = Rs + Rt
@@ -75,7 +78,7 @@ class ADD(Instruction):
     def action_EX(self):
         self.Rd = self.Rs + self.Rt
 
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         pass
 
     def action_WB(self, registers):
@@ -86,14 +89,17 @@ class ADD(Instruction):
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
     def get_control_signals(self):    
-        control_signals = {"RegDst":1,
-                            "ALUSrc":0,
-                            "MemtoReg":0,
-                            "RegWrite":1,
-                            "MemWrite":0,
-                            "Branch":0,
-                            "Jump":0,
-                            "ExtOp":'x'}
+        control_signals = {"RegDst": 1,
+                            "ALUSrc": 0,
+                            "MemtoReg": 0,
+                            "RegWrite": 1,
+                            "MemWrite": 0,
+                            "Branch": 0,
+                            "Jump": 0,
+                            "ALUOp1": 1,
+                            "ALUOp2": 0,
+                            "MemRead": 0,
+                            "ExtOp": 'x'}
         return control_signals
 
     def __str__(self):
@@ -113,7 +119,7 @@ class ADDi(Instruction):
     def action_EX(self):
         self.Rd = self.Rs + self.ImmExt
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         pass
         
     def action_WB(self, registers):
@@ -133,34 +139,38 @@ class ADDi(Instruction):
                             "MemWrite":0,
                             "Branch":0,
                             "Jump":0,
+                            "ALUOp1": 1,
+                            "ALUOp2": 0,
+                            "MemRead": 0,
                             "ExtOp":'x'}
         return control_signals
 
     def __str__(self):
         return "ADDi R"+str(self.get_register_position(16, 21))+", R"+str(self.get_register_position(21, 26))+", "+str(self.get_immediate_value())
-        
+
+
 # Instrucao vai ser Rd = Rs - Rt
 class SUB(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 21
         self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 21 to 16
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
-        
+
     def action_EX(self):
         self.Rd = self.Rs - self.Rt
-        
-    def action_MEM(self, mem, PC_counter):
+
+    def action_MEM(self, mem, PC_counter, recent_mem):
         pass
-        
+
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(11, 16)].write(self.Rd,self)
-        
+        registers[self.get_register_position(11, 16)].write(self.Rd, self)
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
@@ -172,6 +182,9 @@ class SUB(Instruction):
                             "MemWrite":0,
                             "Branch":0,
                             "Jump":0,
+                            "ALUOp1": 1,
+                            "ALUOp2": 0,
+                            "MemRead": 0,
                             "ExtOp":"x"}
         return control_signals
     
@@ -195,7 +208,7 @@ class MUL(Instruction):
         self.Rd = self.Rs * self.Rt
         self.execution_state -= 1
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         pass
         
     def action_WB(self, registers):
@@ -214,6 +227,9 @@ class MUL(Instruction):
                             "MemWrite":0,
                             "Branch":0,
                             "Jump":0,
+                            "ALUOp1": 1,
+                            "ALUOp2": 0,
+                            "MemRead": 0,
                             "ExtOp":"x"}
         return control_signals
 
@@ -241,7 +257,7 @@ class BEQ(Instruction):
         pass
              
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         print (self.Rs)
         print (self.Rt)
         if self.Rs == self.Rt:
@@ -264,6 +280,9 @@ class BEQ(Instruction):
                             "MemWrite":0,
                             "Branch":1,
                             "Jump":0,
+                            "ALUOp1": 0,
+                            "ALUOp2": 1,
+                            "MemRead": 0,
                             "ExtOp":'x'}
         return control_signals
 
@@ -289,7 +308,7 @@ class BLE(Instruction):
         pass
         
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         if self.Rs <= self.Rt:
            PC_counter.write((self.Imm),self)
         else:
@@ -310,6 +329,9 @@ class BLE(Instruction):
                             "MemWrite":0,
                             "Branch":1,
                             "Jump":0,
+                            "ALUOp1": 0,
+                            "ALUOp2": 1,
+                            "MemRead": 0,
                             "ExtOp":'x'}
         return control_signals
 
@@ -334,7 +356,7 @@ class BNE(Instruction):
         pass
         
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         if self.Rs != self.Rt:
            PC_counter.write((PC_counter.get_value()+self.Imm),self)
         else:
@@ -355,6 +377,9 @@ class BNE(Instruction):
                             "MemWrite":0,
                             "Branch":1,
                             "Jump":0,
+                            "ALUOp1": 0,
+                            "ALUOp2": 1,
+                            "MemRead": 0,
                             "ExtOp":'x'}
         return control_signals
 
@@ -375,7 +400,7 @@ class JMP(Instruction):
     def action_EX(self):
         pass 
         
-    def action_MEM(self, mem, PC_counter):
+    def action_MEM(self, mem, PC_counter, recent_mem):
         PC_counter.write(self.PC,self)
         
     def action_WB(self, registers):
@@ -393,6 +418,9 @@ class JMP(Instruction):
                             "MemWrite":0,
                             "Branch":0,
                             "Jump":1,
+                            "ALUOp1": 0,
+                            "ALUOp2": 1,
+                            "MemRead": 0,
                             "ExtOp":"x"}
         return control_signals
 
@@ -404,38 +432,42 @@ class LW(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 21
         self.Rs = registers[self.get_register_position(21, 26)].get_value()
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
-        
+
     def action_EX(self):
         pass
-             
-        
-    def action_MEM(self, mem, PC_counter):
-        self.Rt = mem[(self.Rs + self.ImmExt - 1000)/4]
-        
-        
+
+    def action_MEM(self, mem, PC_counter, recent_mem):
+        address = self.Rs + self.ImmExt
+        self.Rt = mem[(address - 1000)/4]
+        recent_mem.pop()
+        recent_mem.insert(0, (address, self.Rt))
+
     def action_WB(self, registers):
         # Rd: 16 to 11
-        registers[self.get_register_position(16, 21)].write(self.Rt,self)
-        
+        registers[self.get_register_position(16, 21)].write(self.Rt, self)
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
-    
-    def get_control_signals(self):    
-        control_signals = {"RegDst":0,
-                            "ALUSrc":1,
-                            "MemtoReg":1,
-                            "RegWrite":1,
-                            "MemWrite":0,
-                            "Branch":0,
-                            "Jump":0,
-                            "ExtOp":1}
+
+    def get_control_signals(self):
+        control_signals = {"RegDst": 0,
+                           "ALUSrc": 1,
+                           "MemtoReg": 1,
+                           "RegWrite": 1,
+                           "MemWrite": 0,
+                           "Branch": 0,
+                           "Jump": 0,
+                           "ALUOp1": 0,
+                           "ALUOp2": 0,
+                           "MemRead": 1,
+                           "ExtOp": 1}
         return control_signals
 
     def __str__(self):
@@ -446,7 +478,7 @@ class SW(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 21
         self.Rs = registers[self.get_register_position(21, 26)].get_value()
@@ -454,16 +486,19 @@ class SW(Instruction):
         self.Rt = registers[self.get_register_position(16, 21)].get_value()
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
-        
+
     def action_EX(self):
         pass
-             
-    def action_MEM(self, mem, PC_counter):
-        mem[(self.Rs+self.ImmExt - 1000)/4] = self.Rt
-        
+
+    def action_MEM(self, mem, PC_counter, recent_mem):
+        address = self.Rs + self.ImmExt
+        mem[(address - 1000)/4] = self.Rt
+        recent_mem.pop()
+        recent_mem.insert(0, (address, self.Rt))
+
     def action_WB(self, registers):
         pass
-        
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
@@ -475,6 +510,9 @@ class SW(Instruction):
                             "MemWrite":1,
                             "Branch":0,
                             "Jump":0,
+                            "ALUOp1": 0,
+                            "ALUOp2": 0,
+                            "MemRead": 0,
                             "ExtOp":1}
         return control_signals
 

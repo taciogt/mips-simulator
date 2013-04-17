@@ -22,3 +22,5 @@ class Pipeline(object):
 
         self.PC = []
         self.PC_counter = Register()
+
+        self.recently_used_mem = [(0, 0), (0, 0), (0, 0), (0, 0)]

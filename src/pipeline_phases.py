@@ -183,9 +183,9 @@ class PipelinePhaseMEM(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseMEM, self).__init__()
 
-    def action(self, ex_phase, mem, PC_counter):
+    def action(self, ex_phase, mem, PC_counter, recent_mem):
         self.current_instruction = ex_phase.try_to_return_instruction()
-        self.current_instruction.action_MEM(mem, PC_counter)
+        self.current_instruction.action_MEM(mem, PC_counter, recent_mem)
 
 
 class PipelinePhaseWB(PipelinePhase):
@@ -193,8 +193,10 @@ class PipelinePhaseWB(PipelinePhase):
     def __init__(self):
         super(PipelinePhaseWB, self).__init__()
 
-    def action(self, mem_phase, registers):
+    def action(self, mem_phase, registers, fin_instr):
         self.current_instruction = mem_phase.try_to_return_instruction()
+        if isinstance(self.current_instruction, NOP):
+            fin_instr[0] += 1
         self.current_instruction.action_WB(registers)
 
 

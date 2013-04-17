@@ -6,8 +6,8 @@ class Register():
                           "waiting_write": False}
 
         def write(new_value, instruction):
-            if  not isinstance(new_value, int):
-                raise TypeError("type of value is not an integer") 
+            if not isinstance(new_value, int):
+                raise TypeError("type of value is not an integer")
             value[1] = new_value
             if next_write_use["last_instruction_to_write"] == instruction:
                 next_write_use["waiting_write"] = False

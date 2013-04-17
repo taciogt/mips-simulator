@@ -434,33 +434,52 @@ class Interface(tk.Tk):
 
     def set_sinais_controle(self):
 
-        self.reg_dst.set("mudar!")
-        self.alu_op1.set("mudar!")
-        self.alu_op2.set("mudar!")
-        self.alu_src.set("mudar!")
-        self.branch.set("mudar!")
-        self.mem_read.set("mudar!")
-        self.mem_write.set("mudar!")
-        self.reg_write.set("mudar!")
-        self.mem_to_reg.set("mudar!")
+        # TODO: tem que implementar o ALUOp1, ALUOp2, MemRead
+
+        control_signals = self.controller.get_pipeline_phases_control_signals()
+
+        reg_dst = control_signals[0].get('RegDst', '')
+        alu_op1 = control_signals[0].get('ALUOp1', '')
+        alu_op2 = control_signals[0].get('ALUOp2', '')
+        alu_src = control_signals[0].get('ALUSrc', '')
+        self.reg_dst.set(reg_dst)
+        self.alu_op1.set(alu_op1)
+        self.alu_op2.set(alu_op2)
+        self.alu_src.set(alu_src)
+
+        branch = control_signals[1].get('Branch', '')
+        mem_read = control_signals[1].get('MemRead', '')
+        mem_write = control_signals[1].get('MemWrite', '')
+        self.branch.set(branch)
+        self.mem_read.set(mem_read)
+        self.mem_write.set(mem_write)
+
+        reg_write = control_signals[2].get('RegWrite', '')
+        mem_to_reg = control_signals[2].get('MemtoReg', '')
+        self.reg_write.set(reg_write)
+        self.mem_to_reg.set(mem_to_reg)
 
     def set_memoria_rec_usada(self):
 
-        self.end1.set("mudar valor!")
-        self.end2.set("mudar valor!")
-        self.end3.set("mudar valor!")
-        self.end4.set("mudar valor!")
-        self.value_end1.set("mudar valor!")
-        self.value_end2.set("mudar valor!")
-        self.value_end3.set("mudar valor!")
-        self.value_end4.set("mudar valor!")
+        rec_mem = self.controller.get_recent_memory()
+
+        self.end1.set(rec_mem[0][0])
+        self.end2.set(rec_mem[1][0])
+        self.end3.set(rec_mem[2][0])
+        self.end4.set(rec_mem[3][0])
+        self.value_end1.set(rec_mem[0][1])
+        self.value_end2.set(rec_mem[1][1])
+        self.value_end3.set(rec_mem[2][1])
+        self.value_end4.set(rec_mem[3][1])
 
     def set_informacoes_processador(self):
 
-        self.clock.set("mudar valor!")
-        self.pc.set("mudar valor!")
-        self.inst_concluidas.set("mudar valor!")
-        self.produtividade.set("mudar valor!")
+        info = self.controller.get_information()
+
+        self.clock.set(info['clock_number'])
+        self.pc.set(info['pc'])
+        self.inst_concluidas.set(info['finished_instructions'])
+        self.produtividade.set(info['productivity'])
 
     def set_registradores(self):
 
@@ -507,20 +526,16 @@ def main():
     l.read_mem_values()
     controller.pipeline.mem = l.get_mem_x()
     controller.pipeline.mem.extend(l.get_mem_y())
-    controller.pipeline.PC = ["00100000000000100000000000000010",
-                              "00100000000001010000001111101000",
-                              "00100000000001100001001110001000",
-                              "00100000000000010000000000000000",
-                              "00100000000001110000001111101000",
-                              "10001100101011110000000000000000",
-                              "00000001111000100111100000011000",
-                              "10001100110100000000000000000000",
-                              "00000001111100001000000000100000",
-                              "10101100110100000000000000000000",
-                              "00100000001000010000000000000001",
-                              "00100000101001010000000000000100",
-                              "00100000110001100000000000000100",
-                              "00011100001001110000000000010100"]
+    controller.pipeline.PC = ["00000000001000010000000000100010",
+                              "00100000000000010000000000000001",
+                              "10001100000001000000001111101000",
+                              "00100000100000100000000000000000",
+                              "00010100010000010000000000100100",
+                              "00000000010000010001100000100010",
+                              "00000000010000110010100000011000",
+                              "00100000011000100000000000000000",
+                              "00001000000000000000000000010000",
+                              "10101100000001010000001111101100", ]
     interface.mainloop()
 
 

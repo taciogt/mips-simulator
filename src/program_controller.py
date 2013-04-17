@@ -16,7 +16,7 @@ class ProgramController(object):
     def __init__(self):
         self.pipeline = Pipeline()
         self.clock_number = 0
-        self.finished_instructions = 0
+        self.finished_instructions = [0]
         self.recently_used_mem = [0, 0, 0, 0]
         self.should_pause = True
         self.pipeline.PC = []
@@ -28,9 +28,7 @@ class ProgramController(object):
             res = res and isinstance(phases[i].current_instruction, NOP)
         return res
 
-    #this method should be called only by run_one_clock
-    #and by run_clocks_continuously
-    def run_clock(self, phases):
+    def one_clock(self, phases):
         self.clock_number += 1
 
         # this variable is important not to update pipeline values with
@@ -40,15 +38,28 @@ class ProgramController(object):
             self.run_pipeline_phases(phases)
 
         self.interface.update_interface()
-        if not self.should_pause:
-            time.sleep(2)
-            self.run_clock(phases)
+
+    #this method should be called only by run_one_clock
+    #and by run_clocks_continuously
+    def run_clock(self, phases):
+        while not self.should_pause:
+            #time.sleep(0.001)
+            self.one_clock(phases)
+
+        # if not self.should_pause:
 
     def run_pipeline_phases(self, phases):
         #run all phases of pipeline. It is not a loop because
         #we decided to make different signatures for each one
-        phases[4].action(self.pipeline.phases[3], self.pipeline.registers)
-        phases[3].action(self.pipeline.phases[2], self.pipeline.mem, self.pipeline.PC_counter)
+        phases[4].action(
+            self.pipeline.phases[3],
+            self.pipeline.registers,
+            self.finished_instructions)
+        phases[3].action(
+            self.pipeline.phases[2],
+            self.pipeline.mem,
+            self.pipeline.PC_counter,
+            self.pipeline.recently_used_mem)
         phases[2].action(self.pipeline.phases[1])
         phases[1].action(self.pipeline.phases[0], self.pipeline.registers)
         phases[0].action(self.pipeline.PC, self.pipeline.PC_counter, self.pipeline.registers)
@@ -66,7 +77,7 @@ class ProgramController(object):
     def run_one_clock(self):
         self.update_pipeline = True
         self.should_pause = True
-        t = Thread(target=self.run_clock, args=(self.pipeline.phases,))
+        t = Thread(target=self.one_clock, args=(self.pipeline.phases,))
         t.start()
 
     def run_clocks_continuously(self):
@@ -93,11 +104,19 @@ class ProgramController(object):
         recently_used.append(mem_address)
 
     def get_productivity(self):
-        return finished_instructions/clock_number
+        return float(self.finished_instructions[0])/self.clock_number
 
     def get_pipeline_phases_current_instruction(self):
+        address = self.pipeline.PC_counter.get_value() / 4
+
+        cur_inst_0 = self.pipeline.phases[0].current_instruction
+        if isinstance(cur_inst_0, NOP):
+            if address < len(self.pipeline.PC):
+                cur_inst_0 = self.pipeline.phases[0].instantiate_instruction(
+                    self.pipeline.PC[address])
+
         return [
-            str(self.pipeline.phases[0].current_instruction),
+            str(cur_inst_0),
             str(self.pipeline.phases[1].current_instruction),
             str(self.pipeline.phases[2].current_instruction),
             str(self.pipeline.phases[3].current_instruction),
@@ -109,3 +128,22 @@ class ProgramController(object):
         for register in self.pipeline.registers:
             values.append(register.get_value())
         return values
+
+    def get_pipeline_phases_control_signals(self):
+        return [
+            self.pipeline.phases[2].current_instruction.get_control_signals(),
+            self.pipeline.phases[3].current_instruction.get_control_signals(),
+            self.pipeline.phases[4].current_instruction.get_control_signals(),
+        ]
+
+    def get_recent_memory(self):
+        return self.pipeline.recently_used_mem
+
+    def get_information(self):
+        info_dict = {
+            'clock_number': self.clock_number,
+            'pc': self.pipeline.PC_counter.get_value(),
+            'finished_instructions': self.finished_instructions[0],
+            'productivity': self.get_productivity(),
+        }
+        return info_dict
