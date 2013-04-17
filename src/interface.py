@@ -1,15 +1,20 @@
 # coding: utf-8
 import Tkinter as tk
+import tkFileDialog
+import tkMessageBox
 from program_controller import ProgramController
 from loader import Loader
 
 
 class Interface(tk.Tk):
-    def __init__(self, controller):
+    def __init__(self):
         tk.Tk.__init__(self)
         self.title("MIPS Simulator")
-        self.controller = controller
-        self.controller.interface = self
+        self.file_loaded = False
+
+        self.init_ui()
+
+    def init_ui(self):
 
         self.montar_quadro_superior()
         self.montar_figura()
@@ -162,7 +167,8 @@ class Interface(tk.Tk):
         self.button_open = tk.Button(
             self,
             text="Open",
-            width=10)
+            width=10,
+            command=self.open_file)
         self.button_open.grid(row=0, rowspan=6, column=14, columnspan=2, padx=10)
 
     def montar_quadro_memoria(self):
@@ -398,7 +404,8 @@ class Interface(tk.Tk):
         self.value_r31.grid(row=24, column=15, sticky="E", padx=20)
 
     def run_one_clock(self):
-        self.controller.run_one_clock()
+        if self.file_loaded:
+            self.controller.run_one_clock()
 
         # t = Thread(target=self.controller.run_one_clock)
         # t.start()
@@ -408,11 +415,13 @@ class Interface(tk.Tk):
 
     def run_clocks_continuously(self):
 
-        self.controller.run_clocks_continuously()
+        if self.file_loaded:
+            self.controller.run_clocks_continuously()
 
     def pause(self):
 
-        self.controller.pause()
+        if self.file_loaded:
+            self.controller.pause()
 
     def update_interface(self):
 
@@ -518,24 +527,24 @@ class Interface(tk.Tk):
         self.r30.set(pipeline_registers[30])
         self.r31.set(pipeline_registers[31])
 
+    def open_file(self):
+        try:
+            filename = tkFileDialog.askopenfilename()
+            l = Loader(filename)
+            l.read_mem_values()
+            self.controller = ProgramController()
+            self.controller.interface = self
+            self.controller.pipeline.mem = l.get_mem_x()
+            self.controller.pipeline.mem.extend(l.get_mem_y())
+            self.controller.pipeline.PC = l.get_pc()
+            self.file_loaded = True
+        except:
+            tkMessageBox.showerror('Error', 'Não foi possível abrir o arquivo. Escolha outro')
+
+
 
 def main():
-    controller = ProgramController()
-    interface = Interface(controller)
-    l = Loader()
-    l.read_mem_values()
-    controller.pipeline.mem = l.get_mem_x()
-    controller.pipeline.mem.extend(l.get_mem_y())
-    controller.pipeline.PC = ["00000000001000010000000000100010",
-                              "00100000000000010000000000000001",
-                              "10001100000001000000001111101000",
-                              "00100000100000100000000000000000",
-                              "00010100010000010000000000100100",
-                              "00000000010000010001100000100010",
-                              "00000000010000110010100000011000",
-                              "00100000011000100000000000000000",
-                              "00001000000000000000000000010000",
-                              "10101100000001010000001111101100", ]
+    interface = Interface()
     interface.mainloop()
 
 

@@ -1,14 +1,16 @@
 # coding: utf-8
 
+
 class Loader(object):
-    def __init__(self):
+    def __init__(self, src_file='instructions.txt'):
         self.pc = []
         self.mem_x = []
         self.mem_y = []
         self.instruction_lines = []
+        self.src_file = src_file
 
     def read_instructions(self):
-        f = open('instructions.txt','r')
+        f = open(self.src_file, 'r')
         for line in f:
             self.instruction_lines.append(line)
         f.close()
@@ -24,7 +26,7 @@ class Loader(object):
         return self.pc
 
     def read_mem_values(self):
-        f = open('../src/mem.txt','r')
+        f = open('mem.txt', 'r')
 
         for line in f:
             x, y = line.split()
