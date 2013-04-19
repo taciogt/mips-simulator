@@ -18,6 +18,9 @@ class Register():
         def is_waiting_for_use():
             return next_write_use["waiting_write"]
 
+        def next_instruction_to_write():
+            return next_write_use['last_instruction_to_write']
+
         def declare_last_write_use(instruction):
             next_write_use["last_instruction_to_write"] = instruction
             next_write_use["waiting_write"] = True

@@ -92,8 +92,13 @@ class PipelinePhaseIF(PipelinePhase):
                 isinstance(next_instruction, MUL) or isinstance(next_instruction, BEQ) or
                 isinstance(next_instruction, BLE) or isinstance(next_instruction, BNE) or
                 isinstance(next_instruction, SW)):
-            return (registers[get_register_position(next_instruction_code, 16, 21)].is_waiting_for_use() or
-                    registers[get_register_position(next_instruction_code, 21, 26)].is_waiting_for_use())
+            Rt = registers[get_register_position(next_instruction_code, 16, 21)]
+            if Rt.is_waiting_for_use():
+                next_instruction.Rt = Rt.next_instruction_to_write()
+            Rs = registers[get_register_position(next_instruction_code, 21, 26)]
+            elif Rs.is_waiting_for_use():
+                next_instruction.Rs = Rs.next_instruction_to_write()
+
 
         elif isinstance(next_instruction, ADDi) or isinstance(next_instruction, LW) or isinstance(next_instruction, SW):
             return registers[get_register_position(next_instruction_code, 21, 26)].is_waiting_for_use()
