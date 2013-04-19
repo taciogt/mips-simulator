@@ -69,11 +69,24 @@ class ADD(Instruction):
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+    
+    def get_computed_value(self):
+        return self.Rd  
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
 
     def action_EX(self):
         self.Rd = self.Rs + self.Rt
@@ -111,21 +124,30 @@ class ADDi(Instruction):
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+    def get_computed_value(self):
+        return self.Rt  
+
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
 
     def action_EX(self):
-        self.Rd = self.Rs + self.ImmExt
+        self.Rt = self.Rs + self.ImmExt
 
     def action_MEM(self, mem, PC_counter, recent_mem):
         pass
 
     def action_WB(self, registers):
         # Rt: 16 to 21
-        registers[self.get_register_position(16, 21)].write(self.Rd, self)
+        registers[self.get_register_position(16, 21)].write(self.Rt, self)
 
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
@@ -156,11 +178,22 @@ class SUB(Instruction):
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+    def get_computed_value(self):
+        return self.Rd  
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
 
     def action_EX(self):
         self.Rd = self.Rs - self.Rt
@@ -200,11 +233,22 @@ class MUL(Instruction):
         self.code = instruction_code
         self.execution_state = 2
 
+    def get_computed_value(self):
+        return self.Rd  
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
 
     def action_EX(self):
         self.Rd = self.Rs * self.Rt
@@ -248,11 +292,23 @@ class BEQ(Instruction):
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
+
+
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
 
@@ -299,16 +355,25 @@ class BLE(Instruction):
         self.code = instruction_code
 
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
+
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
-        
+
     def action_EX(self):
         pass
-        
+
         
     def action_MEM(self, mem, PC_counter, recent_mem):
         if self.Rs <= self.Rt:
@@ -323,7 +388,7 @@ class BLE(Instruction):
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
 
-    def get_control_signals(self):    
+    def get_control_signals(self):
         control_signals = {"RegDst": "x",
                            "ALUSrc": 0,
                            "MemtoReg": "x",
@@ -348,42 +413,49 @@ class BNE(Instruction):
         self.code = instruction_code
 
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
+
         # 16 to 0
         self.Imm = self.get_register_position(0, 16)
-        
+
     def action_EX(self):
         pass
-        
-        
+
     def action_MEM(self, mem, PC_counter, recent_mem):
         if self.Rs != self.Rt:
-           PC_counter.write((PC_counter.get_value()+self.Imm),self)
+            PC_counter.write((PC_counter.get_value()+self.Imm), self)
         else:
             PC_counter.concede_right_to_use(self)
-        
+
     def action_WB(self, registers):
         pass
-        
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
-    
-    def get_control_signals(self):    
-        control_signals = {"RegDst":"x",
-                            "ALUSrc":0,
-                            "MemtoReg":"x",
-                            "RegWrite":0,
-                            "MemWrite":0,
-                            "Branch":1,
-                            "Jump":0,
-                            "ALUOp1": 0,
-                            "ALUOp2": 1,
-                            "MemRead": 0,
-                            "ExtOp":'x'}
+
+    def get_control_signals(self):
+        control_signals = {"RegDst": "x",
+                           "ALUSrc": 0,
+                           "MemtoReg": "x",
+                           "RegWrite": 0,
+                           "MemWrite": 0,
+                           "Branch": 1,
+                           "Jump": 0,
+                           "ALUOp1": 0,
+                           "ALUOp2": 1,
+                           "MemRead": 0,
+                           "ExtOp": 'x'}
         return control_signals
 
     def __str__(self):
@@ -394,37 +466,36 @@ class JMP(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
-        
+
     def action_ID(self, registers):
         # 26 to 0
         self.PC = self.get_register_position(0, 26)
-        
-        
+
     def action_EX(self):
-        pass 
-        
+        pass
+
     def action_MEM(self, mem, PC_counter, recent_mem):
-        PC_counter.write(self.PC,self)
-        
+        PC_counter.write(self.PC, self)
+
     def action_WB(self, registers):
         pass
-        
+
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
-    
-    def get_control_signals(self):    
-        control_signals = {"RegDst":"x",
-                            "ALUSrc":"x",
-                            "MemtoReg":"x",
-                            "RegWrite":0,
-                            "MemWrite":0,
-                            "Branch":0,
-                            "Jump":1,
-                            "ALUOp1": 0,
-                            "ALUOp2": 1,
-                            "MemRead": 0,
-                            "ExtOp":"x"}
+
+    def get_control_signals(self):
+        control_signals = {"RegDst": "x",
+                           "ALUSrc": "x",
+                           "MemtoReg": "x",
+                           "RegWrite": 0,
+                           "MemWrite": 0,
+                           "Branch": 0,
+                           "Jump": 1,
+                           "ALUOp1": 0,
+                           "ALUOp2": 1,
+                           "MemRead": 0,
+                           "ExtOp": "x"}
         return control_signals
 
     def __str__(self):
@@ -436,14 +507,24 @@ class LW(Instruction):
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+        self.phase_ID = False
+
+    def get_computed_value(self):
+        return self.Rt  
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        self.phase_ID = True
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
 
     def action_EX(self):
-        pass
+        self.phase_ID = False
 
     def action_MEM(self, mem, PC_counter, recent_mem):
         address = self.Rs + self.ImmExt
@@ -475,18 +556,30 @@ class LW(Instruction):
 
     def __str__(self):
         return "LW R"+str(self.get_register_position(16, 21))+", "+str(self.get_immediate_value())+"("+str(self.get_register_position(21, 26))+")"
-        
+
 
 class SW(Instruction):
 
     def __init__(self, instruction_code):
         self.code = instruction_code
 
+    def get_computed_value(self):
+        return self.Rt  
+
     def action_ID(self, registers):
-        # 26 to 21
-        self.Rs = registers[self.get_register_position(21, 26)].get_value()
-        # 21 to 16
-        self.Rt = registers[self.get_register_position(16, 21)].get_value()
+        if hasattr(self, 'Rs_instruction'):
+            self.Rs = self.Rs_instruction.get_computed_value()
+        else:
+             # 26 to 21
+            self.Rs = registers[self.get_register_position(21, 26)].get_value()
+        
+
+        if hasattr(self, 'Rt_instruction'):
+            self.Rt = self.Rt_instruction.get_computed_value()
+        else:    
+            # 21 to 16
+            self.Rt = registers[self.get_register_position(16, 21)].get_value()
+
         # 16 to 0
         self.ImmExt = self.get_immediate_value()
 
@@ -505,18 +598,18 @@ class SW(Instruction):
     # Returns a dictionary with the control signal names as keys and
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
-    def get_control_signals(self):    
+    def get_control_signals(self):
         control_signals = {"RegDst":"x",
-                            "ALUSrc":1,
-                            "MemtoReg":"x",
-                            "RegWrite":0,
-                            "MemWrite":1,
-                            "Branch":0,
-                            "Jump":0,
-                            "ALUOp1": 0,
-                            "ALUOp2": 0,
-                            "MemRead": 0,
-                            "ExtOp":1}
+                           "ALUSrc":1,
+                           "MemtoReg":"x",
+                           "RegWrite":0,
+                           "MemWrite":1,
+                           "Branch":0,
+                           "Jump":0,
+                           "ALUOp1": 0,
+                           "ALUOp2": 0,
+                           "MemRead": 0,
+                           "ExtOp": 1}
         return control_signals
 
     def __str__(self):

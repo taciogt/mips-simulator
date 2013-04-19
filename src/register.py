@@ -32,5 +32,6 @@ class Register():
         self.write = write
         self.get_value = use
         self.is_waiting_for_use = is_waiting_for_use
+        self.next_instruction_to_write = next_instruction_to_write
         self.declare_last_write_use = declare_last_write_use
         self.concede_right_to_use = concede_right_to_use

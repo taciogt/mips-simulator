@@ -85,6 +85,8 @@ class PipelinePhaseIF(PipelinePhase):
     def has_RAW_dependency(self, next_instruction, registers):
         next_instruction_code = next_instruction.code
 
+        next_instruction_NOP = False
+
         if isinstance(next_instruction, NOP) or isinstance(next_instruction, JMP):
             return False
 
@@ -92,18 +94,31 @@ class PipelinePhaseIF(PipelinePhase):
                 isinstance(next_instruction, MUL) or isinstance(next_instruction, BEQ) or
                 isinstance(next_instruction, BLE) or isinstance(next_instruction, BNE) or
                 isinstance(next_instruction, SW)):
+
             Rt = registers[get_register_position(next_instruction_code, 16, 21)]
             if Rt.is_waiting_for_use():
-                next_instruction.Rt = Rt.next_instruction_to_write()
-            Rs = registers[get_register_position(next_instruction_code, 21, 26)]
-            elif Rs.is_waiting_for_use():
-                next_instruction.Rs = Rs.next_instruction_to_write()
+                next_instruction.Rt_instruction = Rt.next_instruction_to_write()
+                if isinstance(next_instruction.Rt_instruction, LW) and next_instruction.Rt_instruction.phase_ID:
+                    next_instruction_NOP = True 
 
+            Rs = registers[get_register_position(next_instruction_code, 21, 26)]
+            if Rs.is_waiting_for_use():
+                next_instruction.Rs_instruction = Rs.next_instruction_to_write()
+                if isinstance(next_instruction.Rs_instruction, LW) and next_instruction.Rs_instruction.phase_ID:
+                    next_instruction_NOP = True  
 
         elif isinstance(next_instruction, ADDi) or isinstance(next_instruction, LW) or isinstance(next_instruction, SW):
-            return registers[get_register_position(next_instruction_code, 21, 26)].is_waiting_for_use()
+            Rs = registers[get_register_position(next_instruction_code, 21, 26)]
+            if Rs.is_waiting_for_use():
+                next_instruction.Rs_instruction = Rs.next_instruction_to_write()
+                if isinstance(next_instruction.Rs_instruction, LW) and next_instruction.Rs_instruction.phase_ID:
+                    next_instruction_NOP = True 
+
         else:
             raise ValueError("instruction not valid")
+
+        return next_instruction_NOP
+
 
     def has_PC_READ_dependency(self, PC_counter):
         return PC_counter.is_waiting_for_use()
