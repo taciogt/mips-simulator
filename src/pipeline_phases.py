@@ -195,7 +195,7 @@ class PipelinePhaseWB(PipelinePhase):
 
     def action(self, mem_phase, registers, fin_instr):
         self.current_instruction = mem_phase.try_to_return_instruction()
-        if isinstance(self.current_instruction, NOP):
+        if not isinstance(self.current_instruction, NOP):
             fin_instr[0] += 1
         self.current_instruction.action_WB(registers)
 
