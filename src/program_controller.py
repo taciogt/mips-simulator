@@ -65,10 +65,10 @@ class ProgramController(object):
         phases[0].action(self.pipeline.PC, self.pipeline.PC_counter, self.pipeline.registers)
 
         #this is here for debugging
-        print self.clock_number
-        print "=========="
-        printPhases(phases)
-        print "=========="
+        # print self.clock_number
+        # print "=========="
+        # printPhases(phases)
+        # print "=========="
 
         #stop condition
         if (self.pipeline.PC_counter.get_value() >= len(self.pipeline.PC)) and self.all_phases_NOP(phases):

@@ -599,13 +599,13 @@ class SW(Instruction):
     # the bits (0 or 1) as values.
     # These bits should be looked at the third pipeline PDF from the Professor
     def get_control_signals(self):
-        control_signals = {"RegDst":"x",
-                           "ALUSrc":1,
-                           "MemtoReg":"x",
-                           "RegWrite":0,
-                           "MemWrite":1,
-                           "Branch":0,
-                           "Jump":0,
+        control_signals = {"RegDst": "x",
+                           "ALUSrc": 1,
+                           "MemtoReg": "x",
+                           "RegWrite": 0,
+                           "MemWrite": 1,
+                           "Branch": 0,
+                           "Jump": 0,
                            "ALUOp1": 0,
                            "ALUOp2": 0,
                            "MemRead": 0,
@@ -614,4 +614,3 @@ class SW(Instruction):
 
     def __str__(self):
         return "SW R"+str(self.get_register_position(16, 21))+", "+str(self.get_immediate_value())+"("+str(self.get_register_position(21, 26))+")"
-    
