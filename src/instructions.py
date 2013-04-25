@@ -471,7 +471,7 @@ class LW(Instruction):
         return control_signals
 
     def __str__(self):
-        return "LW R"+str(self.get_register_position(16, 21))+", "+str(self.get_immediate_value())+"("+str(self.get_register_position(21, 26))+")"
+        return "LW R"+str(self.get_register_position(16, 21))+", R"+str(self.get_register_position(21, 26))+"("+str(self.get_immediate_value())+")"
         
 
 class SW(Instruction):
