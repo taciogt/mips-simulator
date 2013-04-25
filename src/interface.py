@@ -530,14 +530,15 @@ class Interface(tk.Tk):
     def open_file(self):
         try:
             filename = tkFileDialog.askopenfilename()
-            l = Loader(filename)
-            l.read_mem_values()
-            self.controller = ProgramController()
-            self.controller.interface = self
-            self.controller.pipeline.mem = l.get_mem_x()
-            self.controller.pipeline.mem.extend(l.get_mem_y())
-            self.controller.pipeline.PC = l.get_pc()
-            self.file_loaded = True
+            if filename:
+                l = Loader(filename)
+                l.read_mem_values()
+                self.controller = ProgramController()
+                self.controller.interface = self
+                self.controller.pipeline.mem = l.get_mem_x()
+                self.controller.pipeline.mem.extend(l.get_mem_y())
+                self.controller.pipeline.PC = l.get_pc()
+                self.file_loaded = True
         except:
             tkMessageBox.showerror('Error', 'Não foi possível abrir o arquivo. Escolha outro')
 
